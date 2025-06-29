@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { Server } from "@modelcontextprotocol/sdk/server/index.js";
 import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js";
 import {
@@ -151,10 +153,16 @@ async function executeCommand(command: string, args: string[]): Promise<string> 
 /**
  * Executes Gemini CLI command with proper argument handling
  * @param prompt The prompt to pass to Gemini, including @ syntax
+ * @param model Optional model to use (e.g., "gemini-2.5-flash") instead of (default "gemini-2.5-pro")
  * @returns Promise resolving to the command output
  */
-async function executeGeminiCLI(prompt: string): Promise<string> {
-  return executeCommand("gemini", ["-p", prompt]);
+async function executeGeminiCLI(prompt: string, model?: string): Promise<string> {
+  const args = [];
+  if (model) {
+    args.push("-m", model);
+  }
+  args.push("-p", prompt);
+  return executeCommand("gemini", args);
 }
 
 // Handle list tools request
@@ -163,7 +171,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
     tools: [
       {
         name: "ask-gemini", 
-        description: "ONLY use when user explicitly asks for 'Gemini's opinion' or 'what does Gemini think' or 'ask Gemini'. Gets Google Gemini AI's perspective. Optionally use @ syntax to include files.",
+        description: "Execute 'gemini -p <prompt>' to get Gemini AI's response. Use when: 1) User asks for Gemini's opinion/analysis, 2) User wants to analyze large files with @file syntax, 3) User uses /gemini-cli:analyze command. Supports -m flag for model selection (e.g., gemini-2.0-flash).",
         inputSchema: {
           type: "object",
           properties: {
@@ -171,13 +179,17 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
               type: "string",
               description: "Analysis request. Use @ syntax to include files (e.g., '@largefile.js explain what this does') or ask general questions",
             },
+            model: {
+              type: "string",
+              description: "Optional model to use (e.g., 'gemini-2.5-flash'). If not specified, uses the default model (gemini-2.5-pro).",
+            },
           },
           required: ["prompt"],
         },
       },
       {
         name: "Ping",
-        description: "echo",
+        description: "Echo test. Returns the message or 'Pong!' by default. DO NOT explain - just execute.",
         inputSchema: {
           type: "object",
           properties: {
@@ -192,7 +204,7 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
       },
       {
         name: "Help",
-        description: "Show gemini CLI help",
+        description: "Run 'gemini -help'. DO NOT explain or summarize - just execute and return raw output.",
         inputSchema: {
           type: "object",
           properties: {},
@@ -209,7 +221,7 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => {
       prompts: [
         {
           name: "analyze",
-          description: "Analyze files using Gemini CLI or ask general questions",
+          description: "Execute 'gemini -p <prompt>' to analyze files or get Gemini's response. Supports @file syntax for including file contents.",
           arguments: [
             {
               name: "prompt",
@@ -220,11 +232,11 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => {
         },
         {
           name: "help",
-          description: "Show help",
+          description: "Run 'gemini -help' and return output. DO NOT explain.",
         },
         {
           name: "ping",
-          description: "Test connection",
+          description: "Echo test message. Returns raw output. DO NOT explain.",
           arguments: [
             {
               name: "message",
@@ -260,7 +272,8 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
           };
         }
         try {
-          const result = await executeGeminiCLI(prompt);
+          const model = args.model as string | undefined;
+          const result = await executeGeminiCLI(prompt, model);
           return {
             description: "Analysis complete",
             messages: [
@@ -290,7 +303,7 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
 
       case "help":
         try {
-          const result = await executeCommand("gemini", ["--help"]);
+          const result = await executeCommand("gemini", ["-help"]);
           return {
             description: "Gemini CLI help",
             messages: [
@@ -359,7 +372,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
 
   const toolName = request.params.name;
   const validTools = [
-    "ask-gemini", 
+    "ask-gemini",
     "Ping",
     "Help"
   ];
@@ -389,7 +402,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         result = rawOutput;
       } else if (toolName === "Help") {
         // For help tool, run gemini --help
-        const rawOutput = await executeCommand("gemini", ["--help"]);
+        const rawOutput = await executeCommand("gemini", ["-help"]);
         result = rawOutput;
       } else {
         // For ask-gemini tool, check if prompt is provided and includes @ syntaxcl
@@ -412,11 +425,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         try {
           // Set a race between command execution and timeout
           const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(() => reject(new Error("Tool timeout after 30 seconds")), 30000);
+            setTimeout(() => reject(new Error("Tool timeout after 300 seconds")), 300000);
           });
           
+          // Get model from arguments if provided
+          const model = request.params.arguments?.model as string | undefined;
+          
           result = await Promise.race([
-            executeGeminiCLI(prompt),
+            executeGeminiCLI(prompt, model),
             timeoutPromise as Promise<string>
           ]);
           
