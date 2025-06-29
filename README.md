@@ -77,6 +77,14 @@ After updating the configuration, restart your terminal session.
 - `use gemini to explain quantum computing`
 - `ask gemini about best practices for React development related to @file_im_confused_about`
 
+### Using Gemini CLI's Sandbox Mode (-s)
+The sandbox mode allows you to safely test code changes, run scripts, or execute potentially risky operations in an isolated environment.
+
+- `use gemini sandbox to create and run a Python script that processes data`
+- `ask gemini to safely test @script.py and explain what it does`
+- `use gemini sandbox to install numpy and create a data visualization`
+- `test this code safely: Create a script that makes HTTP requests to an API`
+
 ### Tools (for the AI)
 
 These tools are designed to be used by the AI assistant.
@@ -84,6 +92,10 @@ These tools are designed to be used by the AI assistant.
 -   **`ask-gemini`**: Asks Google Gemini for its perspective. Can be used for general questions or complex analysis of files.
     -   **`prompt`** (required): The analysis request. Use the `@` syntax to include file or directory references (e.g., `@src/main.js explain this code`) or ask general questions (e.g., `Please use a web search to find the latest news stories`).
     -   **`model`** (optional): The Gemini model to use. Defaults to `gemini-2.5-flash`.
+    -   **`sandbox`** (optional): Set to `true` to run in sandbox mode for safe code execution.
+-   **`sandbox-test`**: Safely executes code or commands in Gemini's sandbox environment. Always runs in sandbox mode.
+    -   **`prompt`** (required): Code testing request (e.g., `Create and run a Python script that...` or `@script.py Run this safely`).
+    -   **`model`** (optional): The Gemini model to use.
 -   **`Ping`**: A simple test tool that echoes back a message.
 -   **`Help`**: Shows the Gemini CLI help text.
 
@@ -93,6 +105,8 @@ You can use these commands directly in *claude codes* face (havent tested other 
 
 -   **/analyze**: Analyzes files or directories using Gemini, or asks general questions.
     -   **`prompt`** (required): The analysis prompt. Use `@` syntax to include files (e.g., `/analyze prompt:@src/ summarize this directory`) or ask general questions (e.g., `/analyze prompt:Please use a web search to find the latest news stories`).
+-   **/sandbox**: Safely tests code or scripts in Gemini's sandbox environment.
+    -   **`prompt`** (required): Code testing request (e.g., `/sandbox prompt:Create and run a Python script that processes CSV data` or `/sandbox prompt:@script.py Test this script safely`).
 -   **/help**: Displays the Gemini CLI help information.
 -   **/ping**: Tests the connection to the server.
     -   **`message`** (optional): A message to echo back.
