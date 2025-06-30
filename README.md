@@ -1,3 +1,5 @@
+## the contribution framework is currently in testing, the goal is to use gemini to create gemini-mcp-tool tools. ##
+
 # Gemini MCP Tool
 
 This is a simple Model Context Protocol (MCP) server that allows AI assistants to interact with the [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). It enables the AI to leverage the power of Gemini's massive token window for large analysis, especially with large files and codebases using the `@` syntax for direction.
