@@ -1,4 +1,4 @@
-## the contribution framework is currently in testing, the goal is to use gemini to create gemini-mcp-tool tools. ##
+ >the contribution framework is currently in testing, the goal is to use gemini to create gemini-mcp-tool tools, automate tool creation and merging with automation, TUI based tool generator
 
 # Gemini MCP Tool
 
