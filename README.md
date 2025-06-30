@@ -123,7 +123,7 @@ You can use these commands directly in *claude codes* face (havent tested other 
 
 ## Contributing
 
-Contributions are welcome! Please feel free to fork the repository, make your changes, and open a pull request.
+Contributions are welcome! Please see our [Contributing Guidelines](CONTRIBUTING.md) for details on how to submit pull requests, report issues, and contribute to the project.
 
 ## License
 
