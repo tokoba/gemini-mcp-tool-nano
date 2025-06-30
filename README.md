@@ -14,7 +14,7 @@ This is a simple Model Context Protocol (MCP) server that allows AI assistants t
 `(i want it on claude code!)`
 
 - Outcome: Install, ask claude naturally to use gemini, save tokens.
-- 2. Add this to your claude desktop config.
+- 1. Add this to your claude desktop config.
 
 ```
     "gemini-cli": {
@@ -23,10 +23,10 @@ This is a simple Model Context Protocol (MCP) server that allows AI assistants t
     }
 ```
 
-- 3. Run 'claude mcp add-from-claude-desktop' in the dir you want to use gemini-cli as an mcp,
-- 4. Make sure that you have selected the MCPs you want to import (it defaults to all)
-- 5. Run claude code in the same dir. this dir will now be configured.
-- 6. run "/mcp" in claude code to verify.
+- 2. Run 'claude mcp add-from-claude-desktop' in the dir you want to use gemini-cli as an mcp,
+- 3. Make sure that you have selected the MCPs you want to import (it defaults to all)
+- 4. Run claude code in the same dir. this dir will now be configured.
+- 5. Run "/mcp" *inside* claude code to verify.
 
 ## Prerequisites
 
