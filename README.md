@@ -2,6 +2,10 @@
 
 # Gemini MCP Tool
 
+[![npm version](https://img.shields.io/npm/v/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool)
+[![npm downloads](https://img.shields.io/npm/dt/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+
 > 📚 **[View Full Documentation](https://jamubc.github.io/gemini-mcp-tool/)** - Professional docs with search, guides, and examples
 
 This is a simple Model Context Protocol (MCP) server that allows AI assistants to interact with the [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). It enables the AI to leverage the power of Gemini's massive token window for large analysis, especially with large files and codebases using the `@` syntax for direction.
