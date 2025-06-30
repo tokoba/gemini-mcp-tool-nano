@@ -10,10 +10,10 @@
 
 This is a simple Model Context Protocol (MCP) server that allows AI assistants to interact with the [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). It enables the AI to leverage the power of Gemini's massive token window for large analysis, especially with large files and codebases using the `@` syntax for direction.
 
-# TLDR:
+# TLDR: '(i want it on claude code!)'
 
 - 1. Install, ask claude naturally to use gemini, save tokens.
-- 2. Add this to your claude config.
+- 2. Add this to your claude desktop config.
 
 ```
     "gemini-cli": {
@@ -22,9 +22,10 @@ This is a simple Model Context Protocol (MCP) server that allows AI assistants t
     }
 ```
 
-- 3. Run 'claude mcp add-from-claude-desktop' where you want to use gemini-cli as an mcp,
+- 3. Run 'claude mcp add-from-claude-desktop' in the dir you want to use gemini-cli as an mcp,
 - 4. Make sure that you have selected the MCPs you want to import (it defaults to all)
-- 50. then run claude code in the same dir. this dir will now be configured.
+- 5. Run claude code in the same dir. this dir will now be configured.
+- 6. run "/mcp" in claude code to verify.
 
 ## Prerequisites
 
