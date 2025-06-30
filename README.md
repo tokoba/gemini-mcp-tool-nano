@@ -10,9 +10,10 @@
 
 This is a simple Model Context Protocol (MCP) server that allows AI assistants to interact with the [Google Gemini CLI](https://github.com/google-gemini/gemini-cli). It enables the AI to leverage the power of Gemini's massive token window for large analysis, especially with large files and codebases using the `@` syntax for direction.
 
-# TLDR: '(i want it on claude code!)'
+# TLDR: 
+`(i want it on claude code!)`
 
-- 1. Install, ask claude naturally to use gemini, save tokens.
+- Outcome: Install, ask claude naturally to use gemini, save tokens.
 - 2. Add this to your claude desktop config.
 
 ```
