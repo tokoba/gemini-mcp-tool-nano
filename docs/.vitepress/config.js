@@ -1,7 +1,7 @@
 import { defineConfig } from 'vitepress'
 
 export default defineConfig({
-  title: 'Gemini MCP Tool',
+  title: 'Gemini MCP Tool Documentation',
   description: 'Bridge Gemini models with Claude Desktop',
   base: '/gemini-mcp-tool/',
   

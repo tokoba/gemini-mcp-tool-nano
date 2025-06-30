@@ -1,3 +1,22 @@
+:::warning Work in Progress
+This page is currently under development and may be incomplete. 
+For quick start instruction, please refer to our [**TLDR**](https://github.com/jamubc/gemini-mcp-tool#readme).
+:::
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+
 # Getting Started
 
 Welcome to the Gemini MCP Tool! This guide will help you get up and running in minutes.
