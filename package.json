@@ -13,7 +13,11 @@
     "dev": "tsc && node dist/index.js",
     "test": "echo \"No tests yet\" && exit 0",
     "lint": "tsc --noEmit",
-    "prepublishOnly": "echo '⚠️  Remember to test locally first!' && npm run build"
+    "contribute": "tsx src/contribute.ts",
+    "prepublishOnly": "echo '⚠️  Remember to test locally first!' && npm run build",
+    "docs:dev": "vitepress dev docs",
+    "docs:build": "vitepress build docs",
+    "docs:preview": "vitepress preview docs"
   },
   "keywords": [
     "mcp",
@@ -43,11 +47,16 @@
   ],
   "dependencies": {
     "@modelcontextprotocol/sdk": "^0.5.0",
+    "chalk": "^5.0.0",
+    "inquirer": "^9.0.0",
     "zod": "^3.22.0"
   },
   "devDependencies": {
+    "@types/inquirer": "^9.0.0",
     "@types/node": "^20.0.0",
-    "typescript": "^5.0.0"
+    "tsx": "^4.0.0",
+    "typescript": "^5.0.0",
+    "vitepress": "^1.6.3"
   },
   "publishConfig": {
     "access": "public"

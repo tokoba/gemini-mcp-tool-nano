@@ -1,0 +1,293 @@
+/* Sleek modern docs inspired by OpenAI/Anthropic */
+
+/* Base colors and fonts */
+:root {
+  --vp-font-family-base: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --vp-font-family-mono: 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+}
+
+/* Dark theme refinements */
+html.dark {
+  --vp-c-bg: #0a0a0a;
+  --vp-c-bg-soft: #141414;
+  --vp-c-bg-mute: #1a1a1a;
+  --vp-c-bg-alt: #0f0f0f;
+  --vp-c-divider: rgba(255, 255, 255, 0.08);
+  --vp-c-divider-light: rgba(255, 255, 255, 0.05);
+}
+
+/* Clean navigation bar */
+.VPNavBar {
+  background-color: rgba(10, 10, 10, 0.8);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--vp-c-divider);
+}
+
+.VPNavBar.has-sidebar .content {
+  backdrop-filter: none;
+}
+
+/* Sleek sidebar styling */
+.VPSidebar {
+  background-color: var(--vp-c-bg);
+  border-right: 1px solid var(--vp-c-divider);
+  padding: 32px 0;
+}
+
+/* Sidebar sections */
+.VPSidebarItem.level-0 {
+  margin-bottom: 24px;
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--vp-c-text-3);
+  margin-bottom: 8px;
+  padding-left: 16px;
+}
+
+/* Sidebar items */
+.VPSidebarItem.level-1 > .item {
+  margin: 1px 8px;
+  padding: 6px 16px;
+  border-radius: 6px;
+  transition: all 0.15s ease;
+}
+
+.VPSidebarItem.level-1 > .item:hover {
+  background-color: var(--vp-c-bg-soft);
+}
+
+.VPSidebarItem.level-1 > .item.is-active {
+  background-color: rgba(66, 184, 131, 0.1);
+}
+
+.VPSidebarItem.level-1 > .item.is-active > .link > .text {
+  color: #42b883;
+  font-weight: 500;
+}
+
+.vp-doc p {
+  margin: 16px 0;
+  line-height: 1.7;
+}
+
+/* Typography improvements */
+.vp-doc h1 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+  margin: 0 0 32px;
+}
+
+.vp-doc h2 {
+  font-size: 1.875rem;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.3;
+  margin: 48px 0 24px;
+  padding-top: 24px;
+  border-top: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc h2:first-child {
+  border-top: none;
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.vp-doc h3 {
+  font-size: 1.375rem;
+  font-weight: 600;
+  line-height: 1.4;
+  margin: 32px 0 16px;
+}
+
+.vp-doc p {
+  line-height: 1.75;
+  margin: 16px 0;
+}
+
+/* Modern code blocks */
+pre {
+  background-color: var(--vp-c-bg-soft) !important;
+  border: 1px solid var(--vp-c-divider);
+  border-radius: 8px;
+  padding: 20px !important;
+  overflow-x: auto;
+}
+
+pre code {
+  font-size: 14px;
+  line-height: 1.6;
+  font-family: var(--vp-font-family-mono);
+}
+
+/* Inline code */
+.vp-doc p code,
+.vp-doc li code {
+  background-color: var(--vp-c-bg-soft);
+  padding: 2px 6px;
+  border-radius: 4px;
+  font-size: 0.9em;
+  border: 1px solid var(--vp-c-divider);
+}
+
+/* Remove gradient backgrounds */
+.VPHome {
+  background: var(--vp-c-bg);
+}
+
+/* Sidebar improvements for wiki-like navigation */
+.VPSidebar {
+  padding: 16px 0;
+}
+
+.VPSidebarItem.level-0 > .item > .text {
+  font-weight: 600;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--vp-c-text-2);
+}
+
+/* Code blocks - more readable */
+.vp-doc div[class*='language-'] {
+  margin: 16px 0;
+  border-radius: 6px;
+}
+
+.vp-doc div[class*='language-'] code {
+  font-size: 0.875rem;
+  line-height: 1.6;
+}
+
+/* Tables - wiki style */
+.vp-doc table {
+  margin: 20px 0;
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.vp-doc table th {
+  background-color: var(--vp-c-bg-soft);
+  font-weight: 600;
+  text-align: left;
+  padding: 12px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+.vp-doc table td {
+  padding: 12px;
+  border: 1px solid var(--vp-c-divider);
+}
+
+/* Remove emoji from logo if desired */
+.VPNavBarTitle .logo {
+  font-size: 1.2rem;
+}
+
+/* Simplify footer */
+.VPFooter {
+  border-top: 1px solid var(--vp-c-divider);
+  padding: 32px 24px;
+}
+
+/* Smooth animations */
+* {
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Content width optimization */
+.VPDoc .content {
+  max-width: 860px;
+}
+
+.VPDoc.has-aside .content {
+  max-width: 740px;
+}
+
+/* Info boxes - more subtle */
+.custom-block {
+  border-radius: 4px;
+  margin: 16px 0;
+}
+
+.custom-block.tip {
+  background-color: var(--vp-c-bg-soft);
+  border-left: 4px solid var(--vp-c-brand);
+}
+
+/* Search - more subtle */
+.DocSearch-Button {
+  border-radius: 4px;
+  background-color: var(--vp-c-bg-soft);
+}
+
+/* Modern hero section */
+.VPHero {
+  padding: 80px 24px;
+}
+
+.VPHome .name {
+  font-size: 3.5rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #42b883 0%, #35495e 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.VPHome .text {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--vp-c-text-1);
+  margin: 16px 0;
+}
+
+.VPHome .tagline {
+  font-size: 1.125rem;
+  color: var(--vp-c-text-2);
+  line-height: 1.6;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Feature cards enhancement */
+.VPFeature {
+  border: 1px solid var(--vp-c-divider);
+  background-color: var(--vp-c-bg-soft);
+  border-radius: 12px;
+  padding: 24px;
+  transition: all 0.25s ease;
+}
+
+.VPFeature:hover {
+  border-color: var(--vp-c-brand);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--vp-c-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--vp-c-divider);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--vp-c-text-3);
+}

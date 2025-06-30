@@ -8,3 +8,19 @@ dist/
 .vscode/
 .idea/
 .npmignore
+
+# Project Management (Private)
+.project-management/
+.metrics/
+.roadmap/
+.analytics/
+
+# Local planning files
+*.local.md
+*-private.json
+planning/
+metrics-data/
+
+# VitePress
+docs/.vitepress/cache/
+docs/.vitepress/dist/
