@@ -1,3 +1,5 @@
+🚀 **Hey! did you just use the tool?** [tell me how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
+ >[Wiki style documentation is under development but available early.](https://github.com/jamubc/gemini-mcp-tool/wiki)
  >the contribution framework is currently in testing, the goal is to use gemini to create gemini-mcp-tool tools, automate tool creation and merging with automation, TUI based tool generator
 
 # Gemini MCP Tool
