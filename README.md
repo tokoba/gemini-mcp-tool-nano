@@ -1,56 +1,84 @@
-🚀 **Hey! did you just use the tool?** [tell me how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
- >[Wiki style documentation is under development but available early.](https://github.com/jamubc/gemini-mcp-tool/wiki)
- >the contribution framework is currently in testing, the goal is to use gemini to create gemini-mcp-tool tools, automate tool creation and merging with automation, TUI based tool generator
+🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
+
+> 📚 [Wiki documentation](https://github.com/jamubc/gemini-mcp-tool/wiki) is available with additional guides and examples.
+> 
+> The contribution framework is currently in testing. Our goal is to use Gemini to create gemini-mcp-tool extensions, automate tool creation, and provide a TUI-based tool generator.
 
 # Gemini MCP Tool
 
+<div align="center">
+
+[![GitHub Release](https://img.shields.io/github/v/release/jamubc/gemini-mcp-tool?logo=github&label=GitHub)](https://github.com/jamubc/gemini-mcp-tool/releases)
 [![npm version](https://img.shields.io/npm/v/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool)
 [![npm downloads](https://img.shields.io/npm/dt/gemini-mcp-tool)](https://www.npmjs.com/package/gemini-mcp-tool)
 [![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Open Source](https://img.shields.io/badge/Open%20Source-❤️-red.svg)](https://github.com/jamubc/gemini-mcp-tool)
 
-> 📚 **[View Full Documentation](https://jamubc.github.io/gemini-mcp-tool/)** - Professional docs with search, guides, and examples
+</div>
+
+> 📚 **[View Full Documentation](https://jamubc.github.io/gemini-mcp-tool/)** - Search me!, Examples, FAQ, Troubleshooting, Best Practices
 
 This is a simple Model Context Protocol (MCP) server that allows AI assistants to interact with the [Gemini CLI](https://github.com/google-gemini/gemini-cli). It enables the AI to leverage the power of Gemini's massive token window for large analysis, especially with large files and codebases using the `@` syntax for direction.
 
-# TLDR: 
-`(i want it on claude code!)`
 
-- Outcome: Install, ask claude naturally to use gemini, save tokens.
-- 1. Add this to your claude desktop config.
+## TLDR: [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) + [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](#)
 
+
+**Goal**: Use Gemini's powerful analysis capabilities directly in Claude Code to save tokens and analyze large files.
+
+### One-Line Setup
+
+```bash
+claude mcp add gemini-cli npx -y gemini-mcp-tool
 ```
-    "gemini-cli": {
-      "command": "npx",
-      "args": ["-y", "gemini-mcp-tool"]
-    }
+
+### Verify Installation
+
+Type `/mcp` inside Claude Code to verify the gemini-cli MCP is active.
+
+---
+
+### Alternative: Import from Claude Desktop
+
+If you already have it configured in Claude Desktop:
+
+1. Add to your Claude Desktop config:
+```json
+"gemini-cli": {
+  "command": "npx",
+  "args": ["-y", "gemini-mcp-tool"]
+}
 ```
 
-- 2. Run 'claude mcp add-from-claude-desktop' in the dir you want to use gemini-cli as an mcp,
-- 3. Make sure that you have selected the MCPs you want to import (it defaults to all)
-- 4. Run claude code in the same dir. this dir will now be configured.
-- 5. Run "/mcp" *inside* claude code to verify.
+2. Import to Claude Code:
+```bash
+claude mcp add-from-claude-desktop
+```
 
 ## Prerequisites
 
-- [Node.js](https://nodejs.org/) (v16.0.0 or higher)
-- [Google Gemini CLI](https://github.com/google-gemini/gemini-cli) installed and configured on your system.
+Before using this tool, ensure you have:
 
-## Installation
+1. **[Node.js](https://nodejs.org/)** (v16.0.0 or higher)
+2. **[Google Gemini CLI](https://github.com/google-gemini/gemini-cli)** installed and configured
 
-You can use this tool without installation via `npx`, which is the recommended approach. However, if you prefer to install it globally, you can do so.
+## Installation Options
 
+### Option 1: NPX (Recommended)
+No installation required - the tool runs directly via `npx`.
+
+### Option 2: Global Installation
 ```bash
-# To install globally (optional)
 npm install -g gemini-mcp-tool
 ```
 
 ## Configuration
 
-You need to register the MCP server with your MCP client (e.g., Claude Code, Claude Desktop, ect).
+Register the MCP server with your MCP client:
 
-### Recommended: Using `npx` (No Installation Needed)
+### For NPX Usage (Recommended)
 
-Add the following to your claude desktop configuration file:
+Add this configuration to your Claude Desktop config file:
 
 ```json
 {
@@ -63,9 +91,9 @@ Add the following to your claude desktop configuration file:
 }
 ```
 
-### Using a Global Installation
+### For Global Installation
 
-If you installed the package globally, use this configuration:
+If you installed globally, use this configuration instead:
 
 ```json
 {
@@ -88,8 +116,8 @@ After updating the configuration, restart your terminal session.
 
 ## Available Commands
 
-- Use natural language: "use gemini to explain index.html", "understand the massive project using gemini", "ask gemini to search for latest news"
-- Claude Code: type /gemini-cli and commands should populate in claude code.
+- **Natural language**: "use gemini to explain index.html", "understand the massive project using gemini", "ask gemini to search for latest news"
+- **Claude Code**: Type `/gemini-cli` and commands will populate in Claude Code's interface.
 
 ## Usage Examples
 
@@ -130,7 +158,7 @@ These tools are designed to be used by the AI assistant.
 
 ### Slash Commands (for the User)
 
-You can use these commands directly in _claude codes_ face (havent tested other clients).
+You can use these commands directly in Claude Code's interface (compatibility with other clients has not been tested).
 
 - **/analyze**: Analyzes files or directories using Gemini, or asks general questions.
   - **`prompt`** (required): The analysis prompt. Use `@` syntax to include files (e.g., `/analyze prompt:@src/ summarize this directory`) or ask general questions (e.g., `/analyze prompt:Please use a web search to find the latest news stories`).
