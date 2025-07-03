@@ -33,7 +33,7 @@ This is a simple Model Context Protocol (MCP) server that allows AI assistants t
 ### One-Line Setup
 
 ```bash
-claude mcp add gemini-cli npx -y gemini-mcp-tool
+claude mcp add gemini-cli -- npx -y gemini-mcp-tool
 ```
 
 ### Verify Installation
