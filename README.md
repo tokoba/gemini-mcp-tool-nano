@@ -1,4 +1,8 @@
-🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
+> Update branch is now live! 2.0.0 is a complete refactor from 1.1.1 (npm version). This change will hopefully speed up future development.
+>  See and test 2.0.0 --> [update branch](https://github.com/jamubc/gemini-mcp-tool/tree/update) --> **"Gemini Reads, Claude edits, Save Claude Tokens"**
+>.
+
+> 🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
 
 > 📚 [Wiki documentation](https://github.com/jamubc/gemini-mcp-tool/wiki) is available with additional guides and examples.
 > 
