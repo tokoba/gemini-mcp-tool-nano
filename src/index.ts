@@ -7,8 +7,32 @@ import {
   ListToolsRequestSchema,
   ListPromptsRequestSchema,
   GetPromptRequestSchema,
+  ListToolsRequest,
+  ListPromptsRequest,
+  GetPromptRequest,
+  CallToolRequest,
+  Tool,
+  Prompt,
+  GetPromptResult,
+  CallToolResult,
+  TextContent,
 } from "@modelcontextprotocol/sdk/types.js";
 import { spawn } from "child_process";
+
+// Request/Response Type Definitions
+interface PromptArguments {
+  [key: string]: string | boolean | undefined;
+  prompt?: string;
+  model?: string;
+  sandbox?: boolean | string;
+  message?: string;
+}
+
+interface ToolArguments {
+  prompt?: string;
+  model?: string;
+  sandbox?: boolean | string;
+}
 
 // Structured response interface for robust AI-tool interaction
 interface ToolBehavior {
@@ -281,6 +305,17 @@ async function executeCommand(
       const msg = data.toString();
       stderr += msg;
 
+      // Check for quota exceeded errors and fail fast
+      if (msg.includes("Quota exceeded for quota metric 'Gemini 2.5 Pro Requests'") && !isResolved) {
+        isResolved = true;
+        clearInterval(progressInterval);
+        console.warn(`[Gemini MCP] Detected quota exceeded in stderr, failing fast`);
+        // Send notification about quota detection
+        sendStatusMessage("🚫 Gemini 2.5 Pro quota exceeded, switching to Flash model...");
+        reject(new Error(`Quota exceeded for quota metric 'Gemini 2.5 Pro Requests'`));
+        return;
+      }
+
       // Log stderr output for debugging (but filter deprecation warnings)
       if (!msg.includes("DeprecationWarning")) {
         console.error(`[Gemini MCP] stderr: ${msg.trim()}`);
@@ -330,7 +365,7 @@ async function executeCommand(
 }
 
 /**
- * Executes Gemini CLI command with proper argument handling
+ * Executes Gemini CLI command with proper argument handling and automatic fallback
  * @param prompt The prompt to pass to Gemini, including @ syntax
  * @param model Optional model to use (e.g., "gemini-2.5-flash") instead of (default "gemini-2.5-pro")
  * @param sandbox Whether to use sandbox mode (-s flag)
@@ -349,11 +384,50 @@ async function executeGeminiCLI(
     args.push("-s");
   }
   args.push("-p", prompt);
-  return executeCommand("gemini", args);
+  
+  try {
+    // Try with the specified model or default
+    return await executeCommand("gemini", args);
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    
+    // Check if it's a quota exceeded error for Pro model and we haven't already tried Flash
+    if (errorMessage.includes("Quota exceeded for quota metric 'Gemini 2.5 Pro Requests'") && 
+        model !== "gemini-2.5-flash") {
+      
+      console.warn("[Gemini MCP] Gemini 2.5 Pro quota exceeded. Falling back to Gemini 2.5 Flash.");
+      
+      // Send notification about fallback attempt
+      await sendStatusMessage("⚡ Retrying with Gemini 2.5 Flash...");
+      
+      // Rebuild args with Flash model
+      const fallbackArgs = [];
+      fallbackArgs.push("-m", "gemini-2.5-flash");
+      if (sandbox) {
+        fallbackArgs.push("-s");
+      }
+      fallbackArgs.push("-p", prompt);
+      
+      try {
+        // Retry with Flash model
+        const result = await executeCommand("gemini", fallbackArgs);
+        console.warn("[Gemini MCP] Successfully executed with Gemini 2.5 Flash fallback.");
+        await sendStatusMessage("✅ Flash model completed successfully");
+        return result;
+      } catch (fallbackError) {
+        // If Flash also fails, throw the original error with context
+        const fallbackErrorMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
+        throw new Error(`Pro quota exceeded, Flash fallback also failed: ${fallbackErrorMessage}`);
+      }
+    } else {
+      // Re-throw the original error if it's not a Pro quota issue or we already tried Flash
+      throw error;
+    }
+  }
 }
 
 // Handle list tools request
-server.setRequestHandler(ListToolsRequestSchema, async () => {
+server.setRequestHandler(ListToolsRequestSchema, async (request: ListToolsRequest): Promise<{ tools: Tool[] }> => {
   return {
     tools: [
       {
@@ -435,19 +509,31 @@ server.setRequestHandler(ListToolsRequestSchema, async () => {
 });
 
 // Handle list prompts request (for slash commands)
-server.setRequestHandler(ListPromptsRequestSchema, async () => {
+server.setRequestHandler(ListPromptsRequestSchema, async (request: ListPromptsRequest): Promise<{ prompts: Prompt[] }> => {
   return {
     prompts: [
       {
-        name: "analyze",
+        name: "ask-gemini",
         description:
-          "Execute 'gemini -p <prompt>' to analyze files or get Gemini's response. Supports @file syntax for including file contents.",
+          "Execute 'gemini -p <prompt>' to get Gemini AI's response. Use when: 1) User asks for Gemini's opinion/analysis, 2) User wants to analyze large files with @file syntax. Supports -m flag for model selection and -s flag for sandbox testing.",
         arguments: [
           {
             name: "prompt",
             description:
-              "Analysis request. Use @ syntax to include files (e.g., '@file.js explain this') or ask general questions",
+              "Analysis request. Use @ syntax to include files (e.g., '@largefile.js explain what this does') or ask general questions",
             required: true,
+          },
+          {
+            name: "model",
+            description:
+              "Optional model to use (e.g., 'gemini-2.5-flash'). If not specified, uses the default model (gemini-2.5-pro).",
+            required: false,
+          },
+          {
+            name: "sandbox",
+            description:
+              "Use sandbox mode (-s flag) to safely test code changes, execute scripts, or run potentially risky operations in an isolated environment",
+            required: false,
           },
         ],
       },
@@ -486,91 +572,39 @@ server.setRequestHandler(ListPromptsRequestSchema, async () => {
 });
 
 // Handle prompt execution (for slash commands)
-server.setRequestHandler(GetPromptRequestSchema, async (request) => {
-  const promptName = request.params.name;
-  const args = request.params.arguments || {};
+server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptRequest): Promise<GetPromptResult> => {
+  const promptName: string = request.params.name;
+  const args: PromptArguments = (request.params.arguments as PromptArguments) || {};
 
   switch (promptName) {
-    case "analyze":
-      const prompt = args.prompt as string;
-      if (!prompt) {
-        return {
-          description: "Please provide a prompt for analysis",
-          messages: [
-            {
-              role: "user",
-              content: {
-                type: "text",
-                text: "Please provide a prompt for analysis. Use @ syntax to include files (e.g., '@largefile.js explain what this does') or ask general questions",
-              },
-            },
-          ],
-        };
-      }
-      try {
-        const model = args.model as string | undefined;
-        const sandbox =
-          typeof args.sandbox === "boolean"
-            ? args.sandbox
-            : typeof args.sandbox === "string"
-              ? args.sandbox === "true"
-              : false;
-        const result = await executeGeminiCLI(prompt, model, sandbox);
-        return {
-          description: "Analysis complete",
-          messages: [
-            {
-              role: "user",
-              content: {
-                type: "text",
-                text: result,
-              },
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          description: "Analysis failed",
-          messages: [
-            {
-              role: "user",
-              content: {
-                type: "text",
-                text: `Error: ${error instanceof Error ? error.message : String(error)}`,
-              },
-            },
-          ],
-        };
-      }
-
     case "sandbox":
-      const sandboxPrompt = args.prompt as string;
+      const sandboxPrompt: string | undefined = args.prompt;
       if (!sandboxPrompt) {
         return {
           description: "Please provide a prompt for sandbox testing",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: "Please provide a code testing request. Examples: 'Create and run a Python script that processes data' or '@script.py Run this script safely and explain what it does'",
-              },
+              } as TextContent,
             },
           ],
         };
       }
       try {
-        const model = args.model as string | undefined;
-        const result = await executeGeminiCLI(sandboxPrompt, model, true); // Always use sandbox mode
+        const model: string | undefined = args.model;
+        const result: string = await executeGeminiCLI(sandboxPrompt, model, true); // Always use sandbox mode
         return {
           description: "Sandbox testing complete",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: `🔒 **Sandbox Mode Execution:**\n\n${result}`,
-              },
+              } as TextContent,
             },
           ],
         };
@@ -579,11 +613,63 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
           description: "Sandbox testing failed",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: `🔒 **Sandbox Error:**\n\nError: ${error instanceof Error ? error.message : String(error)}`,
-              },
+              } as TextContent,
+            },
+          ],
+        };
+      }
+
+    case "ask-gemini":
+      const prompt: string | undefined = args.prompt;
+      if (!prompt) {
+        return {
+          description: "Please provide a prompt for analysis",
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text: "Please provide a prompt for analysis. Use @ syntax to include files (e.g., '@largefile.js explain what this does') or ask general questions",
+              } as TextContent,
+            },
+          ],
+        };
+      }
+      try {
+        const model: string | undefined = args.model;
+        const sandbox: boolean =
+          typeof args.sandbox === "boolean"
+            ? args.sandbox
+            : typeof args.sandbox === "string"
+              ? args.sandbox === "true"
+              : false;
+        const result: string = await executeGeminiCLI(prompt, model, sandbox);
+        return {
+          description: "Analysis complete",
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text: result,
+              } as TextContent,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          description: "Analysis failed",
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text: `Error: ${error instanceof Error ? error.message : String(error)}`,
+              } as TextContent,
             },
           ],
         };
@@ -591,12 +677,12 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
 
     case "help":
       try {
-        const startTime = Date.now();
-        const rawOutput = await executeCommand("gemini", ["-help"]);
-        const endTime = Date.now();
+        const startTime: number = Date.now();
+        const rawOutput: string = await executeCommand("gemini", ["-help"]);
+        const endTime: number = Date.now();
 
         // Create structured response for slash command
-        const structuredResult = createStructuredResponse(
+        const structuredResult: string = createStructuredResponse(
           rawOutput,
           {
             should_explain: false,
@@ -615,11 +701,11 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
           description: "Gemini CLI help",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: structuredResult,
-              },
+              } as TextContent,
             },
           ],
         };
@@ -628,25 +714,25 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
           description: "Help failed",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: `Error: ${error instanceof Error ? error.message : String(error)}`,
-              },
+              } as TextContent,
             },
           ],
         };
       }
 
     case "ping":
-      const message = (args.message as string) || "Pong!";
+      const message: string = args.message || "Pong!";
       try {
-        const startTime = Date.now();
-        const rawOutput = await executeCommand("echo", [message]);
-        const endTime = Date.now();
+        const startTime: number = Date.now();
+        const rawOutput: string = await executeCommand("echo", [message]);
+        const endTime: number = Date.now();
 
         // Create structured response for slash command
-        const structuredResult = createStructuredResponse(
+        const structuredResult: string = createStructuredResponse(
           rawOutput,
           {
             should_explain: false,
@@ -665,11 +751,11 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
           description: "Ping successful",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: structuredResult,
-              },
+              } as TextContent,
             },
           ],
         };
@@ -678,11 +764,11 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
           description: "Ping failed",
           messages: [
             {
-              role: "user",
+              role: "user" as const,
               content: {
-                type: "text",
+                type: "text" as const,
                 text: `Error: ${error instanceof Error ? error.message : String(error)}`,
-              },
+              } as TextContent,
             },
           ],
         };
@@ -694,9 +780,9 @@ server.setRequestHandler(GetPromptRequestSchema, async (request) => {
 });
 
 // Handle tool execution
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
-  const toolName = request.params.name;
-  const validTools = ["ask-gemini", "sandbox-test", "Ping", "Help"];
+server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest): Promise<CallToolResult> => {
+  const toolName: string = request.params.name;
+  const validTools: string[] = ["ask-gemini", "sandbox-test", "Ping", "Help"];
 
   if (validTools.includes(toolName)) {
     try {
@@ -707,14 +793,15 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         JSON.stringify(request.params.arguments, null, 2),
       );
 
-      // Get prompt and other parameters from arguments
-      const prompt = (request.params.arguments?.prompt as string) || "";
-      const model = request.params.arguments?.model as string | undefined;
-      const sandbox =
-        typeof request.params.arguments?.sandbox === "boolean"
-          ? request.params.arguments.sandbox
-          : typeof request.params.arguments?.sandbox === "string"
-            ? request.params.arguments.sandbox === "true"
+      // Get prompt and other parameters from arguments with proper typing
+      const args: ToolArguments = (request.params.arguments as ToolArguments) || {};
+      const prompt: string = args.prompt || "";
+      const model: string | undefined = args.model;
+      const sandbox: boolean =
+        typeof args.sandbox === "boolean"
+          ? args.sandbox
+          : typeof args.sandbox === "string"
+            ? args.sandbox === "true"
             : false;
 
       console.warn(`[Gemini MCP] Parsed prompt: "${prompt}"`);
@@ -729,11 +816,11 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       let result: string;
       if (toolName === "Ping") {
         // For test tool, run echo command with structured response
-        const startTime = Date.now();
-        const message = prompt || "Pong!";
+        const startTime: number = Date.now();
+        const message: string = prompt || "Pong!";
 
-        const rawOutput = await executeCommand("echo", [message]);
-        const endTime = Date.now();
+        const rawOutput: string = await executeCommand("echo", [message]);
+        const endTime: number = Date.now();
 
         // Create structured response with behavioral flags
         result = createStructuredResponse(
@@ -752,9 +839,9 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         );
       } else if (toolName === "Help") {
         // For help tool, run gemini --help with structured response
-        const startTime = Date.now();
-        const rawOutput = await executeCommand("gemini", ["-help"]);
-        const endTime = Date.now();
+        const startTime: number = Date.now();
+        const rawOutput: string = await executeCommand("gemini", ["-help"]);
+        const endTime: number = Date.now();
 
         // Create structured response with behavioral flags
         result = createStructuredResponse(
@@ -791,18 +878,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           "🔒 Executing Gemini CLI command in sandbox mode...\n\n";
 
         try {
-          // Set a race between command execution and timeout (10 minutes for sandbox operations)
-          const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(
-              () => reject(new Error("Sandbox timeout after 600 seconds")),
-              600000,
-            );
-          });
-
-          result = await Promise.race([
-            executeGeminiCLI(prompt, model, true), // Always use sandbox mode
-            timeoutPromise as Promise<string>,
-          ]);
+          result = await executeGeminiCLI(prompt, model, true); // Always use sandbox mode
 
           console.warn(
             `[Gemini MCP] Sandbox command completed successfully, result length: ${result.length}`,
@@ -843,24 +919,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
         let statusLog = `🔄 Executing Gemini CLI command${sandbox ? " in sandbox mode" : ""}...\n\n`;
 
         try {
-          // Set a race between command execution and timeout (longer for sandbox operations)
-          const timeoutDuration = sandbox ? 600000 : 300000; // 10 minutes for sandbox, 5 minutes for regular
-          const timeoutPromise = new Promise((_, reject) => {
-            setTimeout(
-              () =>
-                reject(
-                  new Error(
-                    `Tool timeout after ${timeoutDuration / 1000} seconds`,
-                  ),
-                ),
-              timeoutDuration,
-            );
-          });
-
-          result = await Promise.race([
-            executeGeminiCLI(prompt, model, sandbox),
-            timeoutPromise as Promise<string>,
-          ]);
+          result = await executeGeminiCLI(prompt, model, sandbox);
 
           console.warn(
             `[Gemini MCP] Gemini command completed successfully, result length: ${result.length}`,
@@ -874,10 +933,14 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
           result = statusLog;
         } catch (error) {
           console.error(`[Gemini MCP] Command failed:`, error);
-          statusLog += `❌ Gemini command failed: ${error instanceof Error ? error.message : "Unknown error"}\n\n`;
-          result =
-            statusLog +
-            `Error: ${error instanceof Error ? error.message : "Unknown error occurred"}`;
+          const errorMessage = error instanceof Error ? error.message : "Unknown error";
+          
+          // Check if it's a quota exceeded error
+          if (errorMessage.includes("Quota exceeded for quota metric 'Gemini 2.5 Pro Requests'")) {
+            result = "Try again with gemini-2.5-flash, gemini-2.5-pro exceeded quota";
+          } else {
+            result = `Error: ${errorMessage}`;
+          }
         }
         console.warn(`[Gemini MCP] About to return result to Claude...`);
       }
