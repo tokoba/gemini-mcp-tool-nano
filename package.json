@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "bin": {
-    "gemini-mcp": "./dist/index.js"
+    "gemini-mcp": "dist/index.js"
   },
   "scripts": {
     "build": "tsc",
@@ -31,7 +31,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jamubc/gemini-mcp-tool.git"
+    "url": "git+https://github.com/jamubc/gemini-mcp-tool.git"
   },
   "bugs": {
     "url": "https://github.com/jamubc/gemini-mcp-tool/issues"

@@ -19,19 +19,37 @@ import {
 } from "@modelcontextprotocol/sdk/types.js";
 import { spawn } from "child_process";
 
-// Request/Response Type Definitions
+// ===== NEW STRICT MODE SYSTEM =====
+
+enum StrictMode {
+  NONE = "none",
+  CHANGE = "change",
+  ANALYSIS = "analysis",
+}
+
+interface StandardizedResponseSections {
+  analysis: string;
+  changesSuggested: string;
+  updatedContent: string;
+  nextSteps: string;
+}
+
+// ===== ENHANCED TYPES =====
+
 interface PromptArguments {
   [key: string]: string | boolean | undefined;
   prompt?: string;
   model?: string;
   sandbox?: boolean | string;
   message?: string;
+  changeMode?: boolean | string; // NEW: Enable structured change responses
 }
 
 interface ToolArguments {
   prompt?: string;
   model?: string;
   sandbox?: boolean | string;
+  changeMode?: boolean | string; // NEW: Enable structured change responses
 }
 
 // Structured response interface for robust AI-tool interaction
@@ -39,7 +57,8 @@ interface ToolBehavior {
   should_explain: boolean;
   output_format: "raw" | "formatted";
   context_needed: boolean;
-  suppress_context: boolean; // NEW: Prevents project context from influencing AI behavior
+  suppress_context: boolean;
+  structured_changes?: boolean; // NEW: Indicates structured change format
 }
 
 interface StructuredToolResponse {
@@ -52,6 +71,156 @@ interface StructuredToolResponse {
   };
   behavior: ToolBehavior; // Explicit instructions for AI
 }
+
+// ===== ENHANCED PARSING FUNCTIONS =====
+
+/**
+ * Parse suggested edits from Gemini's response into a more structured format
+ */
+function parseSuggestedEdits(result: string): string {
+  // Check for common edit patterns and structure them
+  const lines = result.split('\n');
+  let parsedResult = '';
+  let inCodeBlock = false;
+  let currentFile = '';
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    
+    // Detect file references
+    if (line.includes('@') && (line.includes('.js') || line.includes('.ts') || line.includes('.css') || line.includes('.html'))) {
+      const fileMatch = line.match(/@(\S+)/);
+      if (fileMatch) {
+        currentFile = fileMatch[1];
+        parsedResult += `\n**File: ${currentFile}**\n`;
+        continue;
+      }
+    }
+    
+    // Detect code blocks
+    if (line.startsWith('```')) {
+      inCodeBlock = !inCodeBlock;
+      parsedResult += line + '\n';
+      continue;
+    }
+    
+    // Structure replacement patterns
+    if (line.includes('replace') || line.includes('change') || line.includes('update')) {
+      if (line.includes('with') || line.includes('to')) {
+        parsedResult += `\n🔄 ${line}\n`;
+        continue;
+      }
+    }
+    
+    parsedResult += line + '\n';
+  }
+  
+  return parsedResult.trim() !== result ? parsedResult.trim() : result;
+}
+
+/**
+ * Format prompt to prevent "tool not found" errors and encourage structured responses
+ */
+function formatPromptForChanges(originalPrompt: string, strictMode: StrictMode): string {
+  let enhancedPrompt = originalPrompt;
+  
+  if (strictMode === StrictMode.CHANGE) {
+    enhancedPrompt = `${originalPrompt}
+
+IMPORTANT INSTRUCTIONS:
+- You can only read files using @ syntax, you CANNOT write/edit files directly
+- Do NOT attempt to use tools like "edit_file", "write_file", or "create_file" as they don't exist
+- Instead, provide clear, actionable change suggestions that I can apply
+- For each change, specify the exact OLD content and NEW content
+- Use this format for changes:
+
+**File: filename**
+OLD:
+\`\`\`
+[exact current content]
+\`\`\`
+
+NEW:
+\`\`\`
+[replacement content]
+\`\`\`
+
+- Be very precise with whitespace and indentation in OLD content`;
+  } else if (strictMode === StrictMode.ANALYSIS) {
+    enhancedPrompt = `${originalPrompt}
+
+IMPORTANT: You can only read files using @ syntax. Do NOT attempt to use file editing tools as they don't exist. Focus on analysis and suggestions.`;
+  }
+  
+  return enhancedPrompt;
+}
+
+/**
+ * Build standardized response sections for structured output
+ */
+function buildStructuredResponse(result: string, originalPrompt: string, strictMode: StrictMode): StandardizedResponseSections {
+  let changesSuggested = '';
+  let analysisContent = '';
+  let nextSteps = '';
+  
+  if (result.includes("Tool") && result.includes("not found in registry")) {
+    console.warn(`[Gemini MCP] Detected tool registry error, formatting guidance...`);
+    analysisContent = `Analyzed request: "${originalPrompt}"\n\nGemini attempted to use unavailable tools for direct file editing.`;
+    changesSuggested = result;
+    nextSteps = "Gemini cannot directly edit files. To apply the suggested changes above:\n" +
+              "• For single replacements: use Claude's Edit tool\n" +
+              "• For multiple replacements in one file: use Claude's MultiEdit tool\n" +
+              "• Alternative: use find-and-replace functionality";
+  } else if (strictMode === StrictMode.CHANGE) {
+    // Try to parse structured edits
+    const parsedResult = parseSuggestedEdits(result);
+    if (parsedResult !== result) {
+      analysisContent = `Analyzed request: "${originalPrompt}"\n\nFound structured change suggestions that have been parsed for easier application.`;
+      changesSuggested = parsedResult;
+      nextSteps = `To apply the changes:
+• For single replacements: use Claude's Edit tool
+• For multiple replacements in one file: use Claude's MultiEdit tool
+• Alternative: use find-and-replace functionality
+⚠️ Note: The OLD content must match EXACTLY including all whitespace and indentation`;
+    } else {
+      analysisContent = `Analyzed request: "${originalPrompt}"\n\nGemini provided change analysis and suggestions.`;
+      changesSuggested = result;
+      nextSteps = `To apply the changes:
+• For single replacements: use Claude's Edit tool
+• For multiple replacements in one file: use Claude's MultiEdit tool
+• Alternative: use find-and-replace functionality
+⚠️ Note: The OLD content must match EXACTLY including all whitespace and indentation`;
+    }
+  } else {
+    // Standard analysis mode
+    analysisContent = `Analysis of: "${originalPrompt}"`;
+    changesSuggested = result;
+    nextSteps = "Review the analysis above and apply any suggested changes manually.";
+  }
+
+  return {
+    analysis: analysisContent,
+    changesSuggested: changesSuggested,
+    updatedContent: changesSuggested,
+    nextSteps: nextSteps
+  };
+}
+
+/**
+ * Format final response with structured sections
+ */
+function formatStructuredResponse(sections: StandardizedResponseSections): string {
+  return `## Analysis
+${sections.analysis}
+
+## Suggested Changes
+${sections.changesSuggested}
+
+## Next Steps
+${sections.nextSteps}`;
+}
+
+// ===== EXISTING HELPER FUNCTIONS (Enhanced) =====
 
 // Helper function to create structured responses
 function createStructuredResponse(
@@ -105,6 +274,10 @@ function validateToolResponse(
 
         if (behavior.context_needed === false) {
           instructions += "No additional context is needed. ";
+        }
+
+        if (behavior.structured_changes === true) {
+          instructions += "This response contains structured change suggestions. Apply the changes using Claude's editing tools. ";
         }
 
         if (behavior.suppress_context === true) {
@@ -204,7 +377,7 @@ function createContextSuppressionInstructions(toolName: string): string {
 const server = new Server(
   {
     name: "gemini-cli-mcp",
-    version: "1.0.0",
+    version: "1.1.0", // Updated version
   },
   {
     capabilities: {
@@ -365,17 +538,17 @@ async function executeCommand(
 }
 
 /**
- * Executes Gemini CLI command with proper argument handling and automatic fallback
- * @param prompt The prompt to pass to Gemini, including @ syntax
- * @param model Optional model to use (e.g., "gemini-2.5-flash") instead of (default "gemini-2.5-pro")
- * @param sandbox Whether to use sandbox mode (-s flag)
- * @returns Promise resolving to the command output
+ * Enhanced Gemini CLI execution with structured response support
  */
 async function executeGeminiCLI(
   prompt: string,
   model?: string,
   sandbox?: boolean,
+  strictMode: StrictMode = StrictMode.NONE,
 ): Promise<string> {
+  // Format prompt based on strict mode
+  const enhancedPrompt = formatPromptForChanges(prompt, strictMode);
+  
   const args = [];
   if (model) {
     args.push("-m", model);
@@ -383,7 +556,7 @@ async function executeGeminiCLI(
   if (sandbox) {
     args.push("-s");
   }
-  args.push("-p", prompt);
+  args.push("-p", enhancedPrompt);
   
   try {
     // Try with the specified model or default
@@ -406,7 +579,7 @@ async function executeGeminiCLI(
       if (sandbox) {
         fallbackArgs.push("-s");
       }
-      fallbackArgs.push("-p", prompt);
+      fallbackArgs.push("-p", enhancedPrompt);
       
       try {
         // Retry with Flash model
@@ -433,7 +606,7 @@ server.setRequestHandler(ListToolsRequestSchema, async (request: ListToolsReques
       {
         name: "ask-gemini",
         description:
-          "Execute 'gemini -p <prompt>' to get Gemini AI's response. Use when: 1) User asks for Gemini's opinion/analysis, 2) User wants to analyze large files with @file syntax, 3) User uses /gemini-cli:analyze command. Supports -m flag for model selection and -s flag for sandbox testing.",
+          "Execute 'gemini -p <prompt>' to get Gemini AI's response. Use when: 1) User asks for Gemini's opinion/analysis, 2) User wants to analyze large files with @file syntax, 3) User uses /gemini-cli:analyze command. Supports -m flag for model selection, -s flag for sandbox testing, and changeMode for structured edit suggestions.",
         inputSchema: {
           type: "object",
           properties: {
@@ -451,6 +624,12 @@ server.setRequestHandler(ListToolsRequestSchema, async (request: ListToolsReques
               type: "boolean",
               description:
                 "Use sandbox mode (-s flag) to safely test code changes, execute scripts, or run potentially risky operations in an isolated environment",
+              default: false,
+            },
+            changeMode: {
+              type: "boolean",
+              description:
+                "Enable structured change mode - formats prompts to prevent tool errors and returns structured edit suggestions that Claude can apply directly",
               default: false,
             },
           },
@@ -515,7 +694,7 @@ server.setRequestHandler(ListPromptsRequestSchema, async (request: ListPromptsRe
       {
         name: "ask-gemini",
         description:
-          "Execute 'gemini -p <prompt>' to get Gemini AI's response. Use when: 1) User asks for Gemini's opinion/analysis, 2) User wants to analyze large files with @file syntax. Supports -m flag for model selection and -s flag for sandbox testing.",
+          "Execute 'gemini -p <prompt>' to get Gemini AI's response. Supports enhanced change mode for structured edit suggestions.",
         arguments: [
           {
             name: "prompt",
@@ -535,6 +714,12 @@ server.setRequestHandler(ListPromptsRequestSchema, async (request: ListPromptsRe
               "Use sandbox mode (-s flag) to safely test code changes, execute scripts, or run potentially risky operations in an isolated environment",
             required: false,
           },
+          {
+            name: "changeMode",
+            description:
+              "Enable structured change mode - formats prompts to prevent tool errors and returns structured edit suggestions",
+            required: false,
+          },
         ],
       },
       {
@@ -547,6 +732,25 @@ server.setRequestHandler(ListPromptsRequestSchema, async (request: ListPromptsRe
             description:
               "Code testing request. Examples: 'Create and run a Python script...' or '@script.py Run this safely and explain'",
             required: true,
+          },
+        ],
+      },
+      {
+        name: "analyze-for-changes",
+        description:
+          "Analyze files with @ syntax and get structured change suggestions. Automatically uses change mode to format responses for Claude's editing tools.",
+        arguments: [
+          {
+            name: "prompt",
+            description:
+              "Change request with @ syntax. Examples: '@file.js replace all instances of foo with bar' or '@style.css update the color scheme to dark mode'",
+            required: true,
+          },
+          {
+            name: "model",
+            description:
+              "Optional model to use (e.g., 'gemini-2.5-flash'). If not specified, uses the default model.",
+            required: false,
           },
         ],
       },
@@ -577,6 +781,57 @@ server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptReques
   const args: PromptArguments = (request.params.arguments as PromptArguments) || {};
 
   switch (promptName) {
+    case "analyze-for-changes":
+      const changePrompt: string | undefined = args.prompt;
+      if (!changePrompt) {
+        return {
+          description: "Please provide a change request",
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text: "Please provide a change request with @ syntax. Examples: '@file.js replace all instances of foo with bar' or '@style.css update the color scheme to dark mode'",
+              } as TextContent,
+            },
+          ],
+        };
+      }
+      try {
+        const model: string | undefined = args.model;
+        const rawResult = await executeGeminiCLI(changePrompt, model, false, StrictMode.CHANGE);
+        
+        // Build structured response
+        const sections = buildStructuredResponse(rawResult, changePrompt, StrictMode.CHANGE);
+        const structuredResult = formatStructuredResponse(sections);
+        
+        return {
+          description: "Change analysis complete",
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text: structuredResult,
+              } as TextContent,
+            },
+          ],
+        };
+      } catch (error) {
+        return {
+          description: "Change analysis failed",
+          messages: [
+            {
+              role: "user" as const,
+              content: {
+                type: "text" as const,
+                text: `Error: ${error instanceof Error ? error.message : String(error)}`,
+              } as TextContent,
+            },
+          ],
+        };
+      }
+
     case "sandbox":
       const sandboxPrompt: string | undefined = args.prompt;
       if (!sandboxPrompt) {
@@ -647,7 +902,23 @@ server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptReques
             : typeof args.sandbox === "string"
               ? args.sandbox === "true"
               : false;
-        const result: string = await executeGeminiCLI(prompt, model, sandbox);
+        const changeMode: boolean =
+          typeof args.changeMode === "boolean"
+            ? args.changeMode
+            : typeof args.changeMode === "string"
+              ? args.changeMode === "true"
+              : false;
+              
+        const strictMode = changeMode ? StrictMode.CHANGE : StrictMode.NONE;
+        const rawResult = await executeGeminiCLI(prompt, model, sandbox, strictMode);
+        
+        let finalResult: string;
+        if (changeMode) {
+          const sections = buildStructuredResponse(rawResult, prompt, strictMode);
+          finalResult = formatStructuredResponse(sections);
+        } else {
+          finalResult = rawResult;
+        }
         return {
           description: "Analysis complete",
           messages: [
@@ -655,7 +926,7 @@ server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptReques
               role: "user" as const,
               content: {
                 type: "text" as const,
-                text: result,
+                text: finalResult,
               } as TextContent,
             },
           ],
@@ -803,10 +1074,17 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
           : typeof args.sandbox === "string"
             ? args.sandbox === "true"
             : false;
+      const changeMode: boolean =
+        typeof args.changeMode === "boolean"
+          ? args.changeMode
+          : typeof args.changeMode === "string"
+            ? args.changeMode === "true"
+            : false;
 
       console.warn(`[Gemini MCP] Parsed prompt: "${prompt}"`);
       console.warn(`[Gemini MCP] Parsed model: ${model || "default"}`);
       console.warn(`[Gemini MCP] Parsed sandbox: ${sandbox || false}`);
+      console.warn(`[Gemini MCP] Parsed changeMode: ${changeMode || false}`);
       console.warn(`[Gemini MCP] ========================`);
 
       // Skip notifications for now to ensure fast response
@@ -915,27 +1193,30 @@ server.setRequestHandler(CallToolRequestSchema, async (request: CallToolRequest)
         }
 
         console.warn(`[Gemini MCP] About to execute Gemini command...`);
-
-        let statusLog = `🔄 Executing Gemini CLI command${sandbox ? " in sandbox mode" : ""}...\n\n`;
+        console.warn(`[Gemini MCP] Change mode enabled: ${changeMode}`);
 
         try {
-          result = await executeGeminiCLI(prompt, model, sandbox);
+          const strictMode = changeMode ? StrictMode.CHANGE : StrictMode.NONE;
+          const rawResult = await executeGeminiCLI(prompt, model, sandbox, strictMode);
+
+          if (changeMode) {
+            // Use structured response for change mode
+            const sections = buildStructuredResponse(rawResult, prompt, strictMode);
+            result = formatStructuredResponse(sections);
+            
+            console.warn(`[Gemini MCP] Structured change response generated`);
+          } else {
+            // Standard response
+            result = `🤖 **Gemini Response:**\n${rawResult}`;
+          }
 
           console.warn(
             `[Gemini MCP] Gemini command completed successfully, result length: ${result.length}`,
           );
-
-          // Add status to our log
-          statusLog += `✅ Gemini command completed successfully (${result.length} characters)\n\n`;
-          //statusLog += `📄 **Raw Gemini Output:**\n\`\`\`\n${result}\n\`\`\`\n\n`;
-          statusLog += `🤖 **Processed Response:**\n${result}`;
-
-          result = statusLog;
         } catch (error) {
           console.error(`[Gemini MCP] Command failed:`, error);
           const errorMessage = error instanceof Error ? error.message : "Unknown error";
           
-          // Check if it's a quota exceeded error
           if (errorMessage.includes("Quota exceeded for quota metric 'Gemini 2.5 Pro Requests'")) {
             result = "Try again with gemini-2.5-flash, gemini-2.5-pro exceeded quota";
           } else {
