@@ -736,25 +736,6 @@ server.setRequestHandler(ListPromptsRequestSchema, async (request: ListPromptsRe
         ],
       },
       {
-        name: "analyze-for-changes",
-        description:
-          "Analyze files with @ syntax and get structured change suggestions. Automatically uses change mode to format responses for Claude's editing tools.",
-        arguments: [
-          {
-            name: "prompt",
-            description:
-              "Change request with @ syntax. Examples: '@file.js replace all instances of foo with bar' or '@style.css update the color scheme to dark mode'",
-            required: true,
-          },
-          {
-            name: "model",
-            description:
-              "Optional model to use (e.g., 'gemini-2.5-flash'). If not specified, uses the default model.",
-            required: false,
-          },
-        ],
-      },
-      {
         name: "help",
         description:
           "Run 'gemini -help' with structured response. BEHAVIOR: should_explain=false, output_format=raw, suppress_context=true.",
@@ -781,57 +762,6 @@ server.setRequestHandler(GetPromptRequestSchema, async (request: GetPromptReques
   const args: PromptArguments = (request.params.arguments as PromptArguments) || {};
 
   switch (promptName) {
-    case "analyze-for-changes":
-      const changePrompt: string | undefined = args.prompt;
-      if (!changePrompt) {
-        return {
-          description: "Please provide a change request",
-          messages: [
-            {
-              role: "user" as const,
-              content: {
-                type: "text" as const,
-                text: "Please provide a change request with @ syntax. Examples: '@file.js replace all instances of foo with bar' or '@style.css update the color scheme to dark mode'",
-              } as TextContent,
-            },
-          ],
-        };
-      }
-      try {
-        const model: string | undefined = args.model;
-        const rawResult = await executeGeminiCLI(changePrompt, model, false, StrictMode.CHANGE);
-        
-        // Build structured response
-        const sections = buildStructuredResponse(rawResult, changePrompt, StrictMode.CHANGE);
-        const structuredResult = formatStructuredResponse(sections);
-        
-        return {
-          description: "Change analysis complete",
-          messages: [
-            {
-              role: "user" as const,
-              content: {
-                type: "text" as const,
-                text: structuredResult,
-              } as TextContent,
-            },
-          ],
-        };
-      } catch (error) {
-        return {
-          description: "Change analysis failed",
-          messages: [
-            {
-              role: "user" as const,
-              content: {
-                type: "text" as const,
-                text: `Error: ${error instanceof Error ? error.message : String(error)}`,
-              } as TextContent,
-            },
-          ],
-        };
-      }
-
     case "sandbox":
       const sandboxPrompt: string | undefined = args.prompt;
       if (!sandboxPrompt) {
