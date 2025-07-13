@@ -1,6 +1,8 @@
-> Update branch is now live! 2.0.0 is a complete refactor from 1.1.1 (npm version). This change will hopefully speed up future development.
->  See and test 2.0.0 --> [update branch](https://github.com/jamubc/gemini-mcp-tool/tree/update) --> **"Gemini Reads, Claude edits, Save Claude Tokens"**
->.
+> **Note:** If your Gemini CLI installation already includes other MCP tools, they may interact with gemini-mcp-tool. This allows Claude to invoke those tools via Gemini, but it can also lead to conflicts or unexpected console output if those MCPs write directly to stdout.
+
+> You can nest prompts by asking Gemini to invoke itself (e.g., `ask gemini to ask gemini`).
+> However, if the request exceeds your quota, it won’t fall back automatically.
+> To use the faster, lower-cost flash model, append `flash` like this: `ask gemini to ask gemini flash`. `¯\_(ツ)_/¯`
 
 > 🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
 
@@ -138,7 +140,7 @@ After updating the configuration, restart your terminal session.
 ### General Questions (without files)
 
 - `ask gemini to search for the latest tech news`
-- `use gemini to explain quantum computing`
+- `use gemini to explain div centering`
 - `ask gemini about best practices for React development related to @file_im_confused_about`
 
 ### Using Gemini CLI's Sandbox Mode (-s)

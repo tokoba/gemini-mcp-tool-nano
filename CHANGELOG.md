@@ -1,11 +1,7 @@
 # Changelog
 
 ## [Unreleased]
-
-- Add dynamic tool loading system
-- Create tool loader in src/tools/index.ts
-- Update contribution templates to TypeScript
-- Plan minimal changes to index.ts for tool discovery
+- Gemini-2.5-pro quota limit exceeded now falls back to gemini-2.5-flash automatically. Unless you ask for pro or flash, it will default to pro.
 
 ## [1.1.1] - 2024-12-29
 
