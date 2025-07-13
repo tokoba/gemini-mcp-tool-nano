@@ -10,7 +10,7 @@
 > **Note:** 
 > - If your Gemini CLI installation already includes other MCP tools, they may interact with gemini-mcp-tool, leading to conflicts or unexpected console output if those MCPs write directly to stdout.  
 > - You can nest prompts by asking Gemini to invoke itself (e.g., `ask gemini to ask gemini`), but it won’t fall back automatically if the request exceeds your quota.  
-> - To use the faster, lower-cost flash model, append `flash` (e.g., `ask gemini to ask gemini flash`).
+> - To use the faster, lower-cost flash model, append `flash` (e.g., `... using flash ...`).
 
 > 🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
 
