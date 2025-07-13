@@ -1,8 +1,16 @@
-> **Note:** If your Gemini CLI installation already includes other MCP tools, they may interact with gemini-mcp-tool. This allows Claude to invoke those tools via Gemini, but it can also lead to conflicts or unexpected console output if those MCPs write directly to stdout.
+## New Feature: Read with Gemini, Edit with Claude + Diffs
 
-> You can nest prompts by asking Gemini to invoke itself (e.g., `ask gemini to ask gemini`).
-> However, if the request exceeds your quota, it won’t fall back automatically.
-> To use the faster, lower-cost flash model, append `flash` like this: `ask gemini to ask gemini flash`. `¯\_(ツ)_/¯`
+<div align="center">
+  <img width="400" alt="screenshot 2025-07-13 at 07 09 45"
+       src="https://github.com/user-attachments/assets/5fccba53-71ce-4546-8aed-b1095c5a1ca8" />
+</div>
+
+---
+
+> **Note:** 
+> - If your Gemini CLI installation already includes other MCP tools, they may interact with gemini-mcp-tool, leading to conflicts or unexpected console output if those MCPs write directly to stdout.  
+> - You can nest prompts by asking Gemini to invoke itself (e.g., `ask gemini to ask gemini`), but it won’t fall back automatically if the request exceeds your quota.  
+> - To use the faster, lower-cost flash model, append `flash` (e.g., `ask gemini to ask gemini flash`).
 
 > 🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
 
