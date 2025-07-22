@@ -14,18 +14,25 @@ hero:
       link: https://github.com/jamubc/gemini-mcp-tool
 
 features:
-  - icon: 🔌
-    title: Broad Compatibility
-    details: Built on the standardized MCP protocol. While it should work with any MCP client, seamless integration is assured with Claude Desktop.
-  - icon: 📁
+  - icon: 📂
     title: File Analysis
-    details: Use @filename syntax for intelligent file processing with Gemini's multimodal capabilities.
-  - icon: 🎯
+    details: With @filename syntax integration, you decide where the focus is.
+  - icon: 🌱
+    title: Native Integrations
+    details: We dont re-invent the wheel.
+  - icon: 🤝
+    title: Claude's new best friend
+    details: Let Claude use Gemini naturally, because 3 is a party. 
+  - icon: 🔌
+    title: MCP Standards
+    details: |
+      <span style="color: #3b82f6;">Built on MCP protocol.</span><br><span style="color: #ef4444;">Tested with MCP standard.</span><br><span style="color: #22c55e;"><em>Benchmarked</em> with <span style="color: #f97316;">Claude Code</span>.</span>
+  - icon: 🔐
+    title: No keys!
+    details: Gemini-mcp-tool does not require any extra keys.
+  - icon: 🚦
     title: Model Selection
-    details: Choose from Gemini Pro, Flash, or Nano based on your needs and budget.
-  - icon: 🛠️
-    title: Easy Contributing
-    details: Revolutionary contribution tools - focus on your ideas, not Git complexity.
+    details: Choose from Gemini-2.5-Pro and Gemini-2.5-Flash, using natural language.
 ---
 
 <div style="text-align: center; margin-top: -10px; margin-bottom: 20px;">
@@ -41,7 +48,6 @@ features:
 
 For installation and setup instructions, please refer to our [GitHub repository](https://github.com/jamubc/gemini-mcp-tool#readme) which contains the most up-to-date installation guide.
 
----
 
 <div style="text-align: center;">
 

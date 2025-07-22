@@ -26,15 +26,8 @@ npm run docs:dev    # Preview docs
 ## Architecture
 
 - `src/index.ts` - Main MCP server
-- `src/tools/` - Tool implementations
+- `src/utils/` - Utility functions and helpers
 - `contribution/` - Automation scripts
 - `docs/` - Documentation
-
-## Adding Tools
-
-1. Create tool in `src/tools/`
-2. Export from `src/tools/index.ts`
-3. Add tests
-4. Submit PR
 
 See [Quick Start](./quick-start) for the easy way!
