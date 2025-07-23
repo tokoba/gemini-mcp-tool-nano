@@ -1,15 +1,3 @@
-## New Feature: Read with Gemini, Edit with Claude + Diffs
-
-<div align="center">
-  <img width="400" alt="screenshot 2025-07-13 at 07 09 45"
-       src="https://github.com/user-attachments/assets/5fccba53-71ce-4546-8aed-b1095c5a1ca8" />
-</div>
-
----
-> 🚀 **Share your experience!** [Tell us how it went](https://github.com/jamubc/gemini-mcp-tool/discussions/2) and help the community grow!
-
-> 📚 [Thorough documentation](https://github.com/jamubc/gemini-mcp-tool/wiki) is available with searching.
-> 
 
 # Gemini MCP Tool
 
@@ -23,14 +11,15 @@
 
 </div>
 
-<a href="https://glama.ai/mcp/servers/@jamubc/gemini-mcp-tool">
-  <img width="380" height="200" src="https://glama.ai/mcp/servers/@jamubc/gemini-mcp-tool/badge" alt="Gemini Tool MCP server" />
-</a>
-
 > 📚 **[View Full Documentation](https://jamubc.github.io/gemini-mcp-tool/)** - Search me!, Examples, FAQ, Troubleshooting, Best Practices
 
 This is a simple Model Context Protocol (MCP) server that allows AI assistants to interact with the [Gemini CLI](https://github.com/google-gemini/gemini-cli). It enables the AI to leverage the power of Gemini's massive token window for large analysis, especially with large files and codebases using the `@` syntax for direction.
 
+- Ask gemini natural questions, through claude or Brainstorm new ideas in a party of 3!
+
+<a href="https://glama.ai/mcp/servers/@jamubc/gemini-mcp-tool">
+  <img width="380" height="200" src="https://glama.ai/mcp/servers/@jamubc/gemini-mcp-tool/badge" alt="Gemini Tool MCP server" />
+</a>
 
 ## TLDR: [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) + [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](#)
 
@@ -116,7 +105,7 @@ If you installed globally, use this configuration instead:
 
 After updating the configuration, restart your terminal session.
 
-## Available Commands
+## Example Workflow
 
 - **Natural language**: "use gemini to explain index.html", "understand the massive project using gemini", "ask gemini to search for latest news"
 - **Claude Code**: Type `/gemini-cli` and commands will populate in Claude Code's interface.
