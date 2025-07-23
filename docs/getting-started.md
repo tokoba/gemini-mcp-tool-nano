@@ -1,15 +1,10 @@
-# Getting Started
+## Getting Started
 
-This guide will help you get up and running with any MCP-compatible client.
-
-:::warning 💡 For quick start instruction, please refer to our [**TLDR**](https://github.com/jamubc/gemini-mcp-tool#readme).
-:::
-
-## Choose Your Client
+<div align="center">⇣ Find your setup ↴</div>
 
 <ClientGrid>
-  <div class="client-card client-card--recommended">
-    <h3>💻 Claude Code</h3>
+  <div class="client-card client-card--recommended claude-code-card">
+    <h3><span class="snowflake">❋</span> Claude Code</h3>
     <div class="client-badge">Power Users</div>
     <p>One-command setup</p>
     <a href="#claude-code-recommended" class="client-button">Get Started →</a>
@@ -26,52 +21,11 @@ This guide will help you get up and running with any MCP-compatible client.
     <h3>📂 Other Clients</h3>
     <div class="client-badge">40+ Options</div>
     <p>Warp, Copilot, and More</p>
-    <a href="#other-mcp-clients" class="client-button">View Options →</a>
+    <a href="#other-mcp-clients" class="client-button">More →</a>
   </div>
 </ClientGrid>
 
----
-#### How does *Gemini-MCP-Tool* work?
-<DiagramModal>
-
-```mermaid
----
-config:
-  flowchart:
-    htmlLabels: false
-    curve: cardinal
----
-flowchart LR
-    subgraph main
-        direction TB
-        A[You] --> |"ask gemini..."| B([**Claude**])
-        B -..-> |"invokes 'ask-gemini'"| C["Gemini-MCP-Tool"]
-        C --> |"spawn!"| D[Gemini-CLI]
-        D e1@-.-> |"response"| C
-        C -.-> |"response"| B
-        B -.-> |"summary response"| A
-        e1@{ animate: true }
-    end
-    subgraph Project
-        B --> |"edits"| E["`**@*Files***`"]
-        D -.-> |"reads"| E
-    end
-    classDef userNode fill:#1a237e,stroke:#fff,color:#fff,stroke-width:2px
-    classDef claudeNode fill:#e64100,stroke:#fff,color:#fff,stroke-width:2px
-    classDef geminiNode fill:#4285f4,stroke:#fff,color:#fff,stroke-width:2px
-    classDef mcpNode fill:#37474f,stroke:#fff,color:#fff,stroke-width:2px
-    classDef dataNode fill:#1b5e20,stroke:#fff,color:#fff,stroke-width:2px
-    class A userNode
-    class B claudeNode
-    class C mcpNode
-    class D geminiNode
-    class E dataNode
-```
-</DiagramModal>
-
-Claude uses MCP protocol to invoke tools on our server, which calls Gemini to analyze your files and suggest edits. Files are processed locally and never stored or shared.
-
-## Choose Your Setup
+## Client Setup
 
 ## Prerequisites
 
@@ -81,25 +35,10 @@ Before installing, ensure you have:
 - **[Google Gemini CLI](https://github.com/google-gemini/gemini-cli)** installed and configured on your system
 - **[Claude Desktop](https://claude.ai/download)** or **[Claude Code](https://www.anthropic.com/claude-code)** with MCP support
 
-## TLDR Quick Start
-::: warning 💡 gemini-mcp-tool is tested extensively with claude code
-:::
-
-**Claude Code (Recommended):**
-
-<CodeBlock 
-  language="bash"
-  code="claude mcp add gemini-cli -- npx -y gemini-mcp-tool
-claude code  # You're ready!"
-/>
-
-**Any Other MCP Client:**
-2. Add MCP server config (see patterns below)
-3. Use natural language: "use gemini to analyze this file"
-
 
 ## Claude Code (Recommended)
-
+::: warning 💡 gemini-mcp-tool is tested extensively with claude code
+:::
 Claude Code offers the smoothest experience.
 
 ```bash
@@ -111,6 +50,20 @@ claude
 ```
 
 ## Claude Desktop
+---
+#### Configuration File Locations
+
+<ConfigModal>
+
+*Where are my Claude Desktop Config Files?:*
+
+- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
+- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
+- **Linux**: `~/.config/claude/claude_desktop_config.json`
+
+</ConfigModal>
+
+---
 
 For Claude Desktop users, add this to your configuration file:
 
@@ -125,18 +78,9 @@ For Claude Desktop users, add this to your configuration file:
 }
 ```
 
-## Configuration File Locations
-
-Find your Claude Desktop configuration file:
-
-- **macOS**: `~/Library/Application Support/Claude/claude_desktop_config.json`
-- **Windows**: `%APPDATA%\Claude\claude_desktop_config.json`
-- **Linux**: `~/.config/claude/claude_desktop_config.json`
-
-::: tip
-After updating the configuration, restart Claude Desktop completely for changes to take effect.
+::: warning
+You must restart Claude Desktop ***completely*** for changes to take effect.
 :::
-
 ## Other MCP Clients
 
 Gemini MCP Tool works with 40+ MCP clients! Here are the common configuration patterns:

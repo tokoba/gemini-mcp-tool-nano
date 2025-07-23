@@ -8,7 +8,7 @@ export default withMermaid(
     base: '/gemini-mcp-tool/',
     
     // Force dark mode by default
-    appearance: 'dark',
+    //appearance: 'dark',
     
     head: [
       ['link', { rel: 'icon', href: '/gemini-mcp-tool/favicon.ico' }],
@@ -21,7 +21,7 @@ export default withMermaid(
     
     nav: [
       { text: 'Home', link: '/' },
-      { text: 'Guide', link: '/getting-started' },
+      { text: 'Open Guide', link: '/getting-started' },
       { text: 'API', link: '/api' }
     ],
 
@@ -61,7 +61,6 @@ export default withMermaid(
           { text: 'Roadmap', link: '/resources/roadmap' },
           { text: 'Troubleshooting', link: '/resources/troubleshooting' },
           { text: 'FAQ', link: '/resources/faq' },
-          { text: 'Changelog', link: '/resources/changelog' }
         ]
       }
     ],
