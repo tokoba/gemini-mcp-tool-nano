@@ -1,6 +1,59 @@
 
 # Gemini MCP Tool
 
+original gemini-mcp-tool: <https://github.com/jamubc/gemini-mcp-tool.git>
+
+This `gemini-mcp-tool-nano` is a fork version which provide mainly `ask-gemini` to preserve context.
+
+## setup
+
+### removal of original gemini-mcp-tool
+
+```sh
+# uninstall
+npm uninstall -g gemini-mcp-tool
+
+# check
+which gemini-mcp
+# if uninstallation succeeded, there will be no result
+```
+
+### setup of this gemini-mcp-tool-nano
+
+```sh
+git clone https://github.com/tokoba/gemini-mcp-tool-nano.git
+cd gemini-mcp-tool-nano
+npm run install
+npm run build
+npm link # this command will link local package to install globally to your pc
+
+# check
+which gemini-mcp
+# if installation succeeded, gemini-mcp will be installed in your node directory
+
+# link with claude code
+claude mcp add gemini-cli gemini-mcp # claude will add your globally installed `gemini-mcp` as name of `gemini-cli`
+
+# check claude
+Checking MCP server health...
+
+gemini-cli: gemini-mcp  - ✓ Connected
+```
+
+json setups: same as the original setup script
+
+```json
+{
+  "mcpServers": {
+    "gemini-cli": { // name of the mcp server which is called by claude, codex, etc
+      "command": "gemini-mcp" // this is the executable name (actual exe)
+    }
+  }
+}
+```
+
+## original document links
+
 <div align="center">
 
 [![GitHub Release](https://img.shields.io/github/v/release/jamubc/gemini-mcp-tool?logo=github&label=GitHub)](https://github.com/jamubc/gemini-mcp-tool/releases)
@@ -23,7 +76,6 @@ This is a simple Model Context Protocol (MCP) server that allows AI assistants t
 
 ## TLDR: [![Claude](https://img.shields.io/badge/Claude-D97757?logo=claude&logoColor=fff)](#) + [![Google Gemini](https://img.shields.io/badge/Google%20Gemini-886FBF?logo=googlegemini&logoColor=fff)](#)
 
-
 **Goal**: Use Gemini's powerful analysis capabilities directly in Claude Code to save tokens and analyze large files.
 
 ## Prerequisites
@@ -32,7 +84,6 @@ Before using this tool, ensure you have:
 
 1. **[Node.js](https://nodejs.org/)** (v16.0.0 or higher)
 2. **[Google Gemini CLI](https://github.com/google-gemini/gemini-cli)** installed and configured
-
 
 ### One-Line Setup
 
@@ -51,6 +102,7 @@ Type `/mcp` inside Claude Code to verify the gemini-cli MCP is active.
 If you already have it configured in Claude Desktop:
 
 1. Add to your Claude Desktop config:
+
 ```json
 "gemini-cli": {
   "command": "npx",
@@ -59,6 +111,7 @@ If you already have it configured in Claude Desktop:
 ```
 
 2. Import to Claude Code:
+
 ```bash
 claude mcp add-from-claude-desktop
 ```

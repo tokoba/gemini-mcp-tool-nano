@@ -11,6 +11,7 @@ import { parseChangeModeOutput, validateChangeModeEdits } from './changeModePars
 import { formatChangeModeResponse, summarizeChangeModeEdits } from './changeModeTranslator.js';
 import { chunkChangeModeEdits } from './changeModeChunker.js';
 import { cacheChunks, getChunks } from './chunkCache.js';
+import { preprocessAtSymbols } from './promptPreprocessor.js';
 
 export async function executeGeminiCLI(
   prompt: string,
@@ -91,10 +92,9 @@ ${prompt_processed}
   if (model) { args.push(CLI.FLAGS.MODEL, model); }
   if (sandbox) { args.push(CLI.FLAGS.SANDBOX); }
   
-  // Ensure @ symbols work cross-platform by wrapping in quotes if needed
-  const finalPrompt = prompt_processed.includes('@') && !prompt_processed.startsWith('"') 
-    ? `"${prompt_processed}"` 
-    : prompt_processed;
+  // Apply @ symbol preprocessing to prevent file reference errors
+  const finalPrompt = preprocessAtSymbols(prompt_processed);
+  Logger.debug(`geminiExecutor: @ symbol preprocessing completed - input: ${prompt_processed.length} chars, output: ${finalPrompt.length} chars`);
     
   args.push(CLI.FLAGS.PROMPT, finalPrompt);
   
@@ -111,10 +111,9 @@ ${prompt_processed}
         fallbackArgs.push(CLI.FLAGS.SANDBOX);
       }
       
-      // Same @ symbol handling for fallback
-      const fallbackPrompt = prompt_processed.includes('@') && !prompt_processed.startsWith('"') 
-        ? `"${prompt_processed}"` 
-        : prompt_processed;
+      // Apply same @ symbol preprocessing for fallback
+      const fallbackPrompt = preprocessAtSymbols(prompt_processed);
+      Logger.debug(`geminiExecutor: fallback @ symbol preprocessing completed - input: ${prompt_processed.length} chars, output: ${fallbackPrompt.length} chars`);
         
       fallbackArgs.push(CLI.FLAGS.PROMPT, fallbackPrompt);
       try {
