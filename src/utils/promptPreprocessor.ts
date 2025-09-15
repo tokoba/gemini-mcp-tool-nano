@@ -31,7 +31,7 @@ const FILEPATH_PATTERN = /@([a-zA-Z0-9\/\.\-_]+)/g;
 export function preprocessAtSymbols(prompt: string, workingDir: string = process.cwd()): string {
   let processedPrompt = prompt;
   
-  // @filepathパターンを検出してリストアップ
+  // Detect and collect @filepath patterns
   const matches = [...prompt.matchAll(FILEPATH_PATTERN)];
   
   if (matches.length === 0) {
@@ -41,18 +41,18 @@ export function preprocessAtSymbols(prompt: string, workingDir: string = process
   
   Logger.debug(`promptPreprocessor: Detected ${matches.length} @ symbol patterns`);
   
-  // 各@filepathパターンを検証
+  // Validate each @filepath pattern
   for (const match of matches) {
     const fullMatch = match[0]; // @filepath
-    const filepath = match[1];   // filepath部分
+    const filepath = match[1];   // filepath portion
     
     try {
-      // 相対パスを絶対パスに変換
+      // Convert relative path to absolute path
       const absolutePath = path.isAbsolute(filepath) 
         ? filepath 
         : path.resolve(workingDir, filepath);
       
-      // ファイル存在確認
+      // Check file existence
       const fileExists = fs.existsSync(absolutePath);
       
       if (fileExists) {
