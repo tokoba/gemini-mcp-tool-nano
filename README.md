@@ -36,7 +36,7 @@ which gemini-mcp
 ```sh
 git clone https://github.com/tokoba/gemini-mcp-tool-nano.git
 cd gemini-mcp-tool-nano
-npm run install
+npm install
 npm run build
 npm link # this command will link local package to install globally to your pc
 
