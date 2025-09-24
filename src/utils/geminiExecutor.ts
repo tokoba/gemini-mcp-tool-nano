@@ -1,17 +1,18 @@
-import { executeCommand } from './commandExecutor.js';
-import { Logger } from './logger.js';
-import { 
-  ERROR_MESSAGES, 
-  STATUS_MESSAGES, 
-  MODELS, 
-  CLI
-} from '../constants.js';
+import { CLI, ERROR_MESSAGES, MODELS, STATUS_MESSAGES } from "../constants.js";
+import { executeCommand } from "./commandExecutor.js";
+import { Logger } from "./logger.js";
 
-import { parseChangeModeOutput, validateChangeModeEdits } from './changeModeParser.js';
-import { formatChangeModeResponse, summarizeChangeModeEdits } from './changeModeTranslator.js';
-import { chunkChangeModeEdits } from './changeModeChunker.js';
-import { cacheChunks, getChunks } from './chunkCache.js';
-import { preprocessAtSymbols } from './promptPreprocessor.js';
+import { chunkChangeModeEdits } from "./changeModeChunker.js";
+import {
+  parseChangeModeOutput,
+  validateChangeModeEdits,
+} from "./changeModeParser.js";
+import {
+  formatChangeModeResponse,
+  summarizeChangeModeEdits,
+} from "./changeModeTranslator.js";
+import { cacheChunks, getChunks } from "./chunkCache.js";
+import { preprocessAtSymbols } from "./promptPreprocessor.js";
 
 export async function executeGeminiCLI(
   prompt: string,
@@ -21,10 +22,10 @@ export async function executeGeminiCLI(
   onProgress?: (newOutput: string) => void
 ): Promise<string> {
   let prompt_processed = prompt;
-  
+
   if (changeMode) {
-    prompt_processed = prompt.replace(/file:(\S+)/g, '@$1');
-    
+    prompt_processed = prompt.replace(/file:(\S+)/g, "@$1");
+
     const changeModeInstructions = `
 [CHANGEMODE INSTRUCTIONS]
 You are generating code modifications that will be processed by an automated system. The output format is critical because it enables programmatic application of changes without human intervention.
@@ -87,43 +88,102 @@ ${prompt_processed}
 `;
     prompt_processed = changeModeInstructions;
   }
-  
+
   const args = [];
-  if (model) { args.push(CLI.FLAGS.MODEL, model); }
-  if (sandbox) { args.push(CLI.FLAGS.SANDBOX); }
-  
-  // Apply @ symbol preprocessing to prevent file reference errors
-  const finalPrompt = preprocessAtSymbols(prompt_processed);
-  Logger.debug(`geminiExecutor: @ symbol preprocessing completed - input: ${prompt_processed.length} chars, output: ${finalPrompt.length} chars`);
-    
-  args.push(CLI.FLAGS.PROMPT, finalPrompt);
-  
+  if (model) {
+    args.push(CLI.FLAGS.MODEL, model);
+  }
+  if (sandbox) {
+    args.push(CLI.FLAGS.SANDBOX);
+  }
+
+  // For complex prompts (changeMode or with @ symbols), use stdin instead of -p flag
+  // This avoids all shell escaping issues with quotes and newlines
+  const useStdin = changeMode || prompt_processed.includes("@");
+  let stdinData: string | undefined;
+
+  if (useStdin) {
+    // Pass prompt via stdin to avoid shell escaping issues
+    const finalPrompt = preprocessAtSymbols(prompt_processed);
+    stdinData = finalPrompt;
+    Logger.debug(
+      `Using stdin for prompt (length: ${finalPrompt.length} chars)`
+    );
+  } else {
+    // Simple prompts can use -p flag with proper escaping
+    const processedPrompt = preprocessAtSymbols(prompt_processed);
+    const escapedPrompt =
+      process.platform === "win32"
+        ? processedPrompt.replace(/"/g, '""') // Windows: escape quotes by doubling
+        : processedPrompt.replace(/"/g, '\\"'); // Unix: escape with backslash
+    args.push(CLI.FLAGS.PROMPT, `"${escapedPrompt}"`);
+  }
+
+  // Log the exact command being executed for debugging
+  Logger.debug(
+    `Executing command: ${CLI.COMMANDS.GEMINI} ${args.join(" ")}${
+      useStdin ? " [prompt via stdin]" : ""
+    }`
+  );
+
   try {
-    return await executeCommand(CLI.COMMANDS.GEMINI, args, onProgress);
+    return await executeCommand(
+      CLI.COMMANDS.GEMINI,
+      args,
+      onProgress,
+      stdinData
+    );
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : String(error);
-    if (errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) && model !== MODELS.FLASH) {
-      Logger.warn(`${ERROR_MESSAGES.QUOTA_EXCEEDED}. Falling back to ${MODELS.FLASH}.`);
+    if (
+      errorMessage.includes(ERROR_MESSAGES.QUOTA_EXCEEDED) &&
+      model !== MODELS.FLASH
+    ) {
+      Logger.warn(
+        `${ERROR_MESSAGES.QUOTA_EXCEEDED}. Falling back to ${MODELS.FLASH}.`
+      );
       await sendStatusMessage(STATUS_MESSAGES.FLASH_RETRY);
       const fallbackArgs = [];
       fallbackArgs.push(CLI.FLAGS.MODEL, MODELS.FLASH);
       if (sandbox) {
         fallbackArgs.push(CLI.FLAGS.SANDBOX);
       }
-      
-      // Apply same @ symbol preprocessing for fallback
-      const fallbackPrompt = preprocessAtSymbols(prompt_processed);
-      Logger.debug(`geminiExecutor: fallback @ symbol preprocessing completed - input: ${prompt_processed.length} chars, output: ${fallbackPrompt.length} chars`);
-        
-      fallbackArgs.push(CLI.FLAGS.PROMPT, fallbackPrompt);
+
+      // Use same stdin logic for fallback
+      if (!useStdin) {
+        const fallbackPrompt = preprocessAtSymbols(prompt_processed);
+        const escapedPrompt =
+          process.platform === "win32"
+            ? fallbackPrompt.replace(/"/g, '""')
+            : fallbackPrompt.replace(/"/g, '\\"');
+        fallbackArgs.push(CLI.FLAGS.PROMPT, `"${escapedPrompt}"`);
+      }
+
+      // Log the fallback command being executed for debugging
+      Logger.debug(
+        `Executing fallback command: ${CLI.COMMANDS.GEMINI} ${fallbackArgs.join(
+          " "
+        )}${useStdin ? " [prompt via stdin]" : ""}`
+      );
+
       try {
-        const result = await executeCommand(CLI.COMMANDS.GEMINI, fallbackArgs, onProgress);
+        const result = await executeCommand(
+          CLI.COMMANDS.GEMINI,
+          fallbackArgs,
+          onProgress,
+          stdinData
+        );
         Logger.warn(`Successfully executed with ${MODELS.FLASH} fallback.`);
         await sendStatusMessage(STATUS_MESSAGES.FLASH_SUCCESS);
         return result;
       } catch (fallbackError) {
-        const fallbackErrorMessage = fallbackError instanceof Error ? fallbackError.message : String(fallbackError);
-        throw new Error(`${MODELS.PRO} quota exceeded, ${MODELS.FLASH} fallback also failed: ${fallbackErrorMessage}`);
+        const fallbackErrorMessage =
+          fallbackError instanceof Error
+            ? fallbackError.message
+            : String(fallbackError);
+        throw new Error(
+          `${MODELS.PRO} quota exceeded, ${MODELS.FLASH} fallback also failed: ${fallbackErrorMessage}`
+        );
       }
     } else {
       throw error;
@@ -141,27 +201,30 @@ export async function processChangeModeOutput(
   if (chunkIndex && chunkCacheKey) {
     const cachedChunks = getChunks(chunkCacheKey);
     if (cachedChunks && chunkIndex > 0 && chunkIndex <= cachedChunks.length) {
-      Logger.debug(`Using cached chunk ${chunkIndex} of ${cachedChunks.length}`);
-      const chunk = cachedChunks[chunkIndex - 1];
-      let result = formatChangeModeResponse(
-        chunk.edits,
-        { current: chunkIndex, total: cachedChunks.length, cacheKey: chunkCacheKey }
+      Logger.debug(
+        `Using cached chunk ${chunkIndex} of ${cachedChunks.length}`
       );
-      
+      const chunk = cachedChunks[chunkIndex - 1];
+      let result = formatChangeModeResponse(chunk.edits, {
+        current: chunkIndex,
+        total: cachedChunks.length,
+        cacheKey: chunkCacheKey,
+      });
+
       // Add summary for first chunk only
       if (chunkIndex === 1 && chunk.edits.length > 5) {
         const allEdits = cachedChunks.flatMap(c => c.edits);
-        result = summarizeChangeModeEdits(allEdits) + '\n\n' + result;
+        result = summarizeChangeModeEdits(allEdits) + "\n\n" + result;
       }
-      
+
       return result;
     }
     Logger.debug(`Cache miss or invalid chunk index, processing new result`);
   }
-  
+
   // Parse OLD/NEW format
   const edits = parseChangeModeOutput(rawResult);
-  
+
   if (edits.length === 0) {
     return `No edits found in Gemini's response. Please ensure Gemini uses the OLD/NEW format. \n\n+ ${rawResult}`;
   }
@@ -169,34 +232,42 @@ export async function processChangeModeOutput(
   // Validate edits
   const validation = validateChangeModeEdits(edits);
   if (!validation.valid) {
-    return `Edit validation failed:\n${validation.errors.join('\n')}`;
+    return `Edit validation failed:\n${validation.errors.join("\n")}`;
   }
-  
+
   const chunks = chunkChangeModeEdits(edits);
-  
+
   // Cache if multiple chunks and we have the original prompt
   let cacheKey: string | undefined;
   if (chunks.length > 1 && prompt) {
     cacheKey = cacheChunks(prompt, chunks);
     Logger.debug(`Cached ${chunks.length} chunks with key: ${cacheKey}`);
   }
-  
+
   // Return requested chunk or first chunk
-  const returnChunkIndex = (chunkIndex && chunkIndex > 0 && chunkIndex <= chunks.length) ? chunkIndex : 1;
+  const returnChunkIndex =
+    chunkIndex && chunkIndex > 0 && chunkIndex <= chunks.length
+      ? chunkIndex
+      : 1;
   const returnChunk = chunks[returnChunkIndex - 1];
-  
+
   // Format the response
   let result = formatChangeModeResponse(
     returnChunk.edits,
-    chunks.length > 1 ? { current: returnChunkIndex, total: chunks.length, cacheKey } : undefined
+    chunks.length > 1
+      ? { current: returnChunkIndex, total: chunks.length, cacheKey }
+      : undefined
   );
-  
+
   // Add summary if helpful (only for first chunk)
   if (returnChunkIndex === 1 && edits.length > 5) {
-    result = summarizeChangeModeEdits(edits, chunks.length > 1) + '\n\n' + result;
+    result =
+      summarizeChangeModeEdits(edits, chunks.length > 1) + "\n\n" + result;
   }
-  
-  Logger.debug(`ChangeMode: Parsed ${edits.length} edits, ${chunks.length} chunks, returning chunk ${returnChunkIndex}`);
+
+  Logger.debug(
+    `ChangeMode: Parsed ${edits.length} edits, ${chunks.length} chunks, returning chunk ${returnChunkIndex}`
+  );
   return result;
 }
 

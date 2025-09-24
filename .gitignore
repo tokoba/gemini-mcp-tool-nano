@@ -18,6 +18,3 @@ docs/.vitepress/dist/
 *.dxt
 extension-build/
 CLAUDE.md
-AGENTS.md
-GEMINI.md
-.env*

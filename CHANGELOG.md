@@ -1,6 +1,16 @@
 # Changelog
 
-## [Unreleased]
+## [1.1.6]
+- **Enhanced @ Symbol Handling**: Added `preprocessAtSymbols` function to prevent Gemini CLI errors when @ symbols are used in non-file contexts
+- **Lightweight Configuration**: Disabled resource-intensive `brainstormTool` and `timeoutTestTool` by default for improved performance
+- **Cross-Platform Stability**: Merged Windows compatibility improvements with robust @ symbol preprocessing
+- **Improved Reliability**: File existence validation before passing @ references to Gemini CLI
+
+## [1.1.5]
+- windows compatibility
+
+## [1.1.4]
+- skipped
 
 ## [1.1.3]
 - "gemini reads, claude edits"

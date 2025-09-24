@@ -7,14 +7,12 @@ This `gemini-mcp-tool-nano` is a fork version which provide mainly `ask-gemini` 
 
 ## difference
 
-total: 1842 tokens
+total: 1108 tokens
 
 ```sh
 > /context
  MCP tools · /mcp
  └ mcp__gemini-cli__ask-gemini (gemini-cli): 631 tokens
- └ mcp__gemini-cli__ping (gemini-cli): 386 tokens
- └ mcp__gemini-cli__Help (gemini-cli): 368 tokens
  └ mcp__gemini-cli__fetch-chunk (gemini-cli): 457 tokens
 ```
 
