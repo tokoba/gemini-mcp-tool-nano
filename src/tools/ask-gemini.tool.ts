@@ -44,7 +44,7 @@ const askGeminiArgsSchema = z.object({
 });
 
 export const askGeminiTool: UnifiedTool = {
-  name: "ask-gemini",
+  name: "ask",
   description:
     "model selection [-m], sandbox [-s], and changeMode:boolean for providing edits",
   zodSchema: askGeminiArgsSchema,
