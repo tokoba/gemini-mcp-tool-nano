@@ -199,7 +199,9 @@ export async function processChangeModeOutput(
 ): Promise<string> {
   // Check for cached chunks first
   if (chunkIndex && chunkCacheKey) {
-    const cachedChunks = getChunks(chunkCacheKey);
+    // Normalize possible quoted cache keys that can come from UI/tooling
+    const normalizedKey = String(chunkCacheKey).trim().replace(/^['"]|['"]$/g, "");
+    const cachedChunks = getChunks(normalizedKey);
     if (cachedChunks && chunkIndex > 0 && chunkIndex <= cachedChunks.length) {
       Logger.debug(
         `Using cached chunk ${chunkIndex} of ${cachedChunks.length}`
@@ -208,7 +210,7 @@ export async function processChangeModeOutput(
       let result = formatChangeModeResponse(chunk.edits, {
         current: chunkIndex,
         total: cachedChunks.length,
-        cacheKey: chunkCacheKey,
+        cacheKey: normalizedKey,
       });
 
       // Add summary for first chunk only

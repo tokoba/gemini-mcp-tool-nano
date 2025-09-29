@@ -46,11 +46,14 @@ export const fetchChunkTool: UnifiedTool = {
     Logger.toolInvocation("fetch-chunk", args);
     Logger.debug(`Fetching chunk ${chunkIndex} with cache key: ${cacheKey}`);
 
+    // Normalize potential quoted values coming from UI/tooling
+    const normalizedKey = String(cacheKey).trim().replace(/^['"]|['"]$/g, "");
+
     // Retrieve cached chunks
-    const chunks = getChunks(cacheKey);
+    const chunks = getChunks(normalizedKey);
 
     if (!chunks) {
-      return `❌ Cache miss: No chunks found for cache key "${cacheKey}". 
+      return `❌ Cache miss: No chunks found for cache key "${normalizedKey}". 
 
   Possible reasons:
   1. The cache key is incorrect, Have you ran ask with changeMode enabled?
@@ -77,7 +80,7 @@ Please use a valid chunk index.`;
     let result = formatChangeModeResponse(chunk.edits, {
       current: chunkIndex,
       total: chunks.length,
-      cacheKey,
+      cacheKey: normalizedKey,
     });
 
     // Add summary for first chunk

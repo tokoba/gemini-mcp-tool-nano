@@ -61,10 +61,12 @@ export const askGeminiTool: UnifiedTool = {
     }
 
     if (changeMode && chunkIndex && chunkCacheKey) {
+      const indexNum = typeof chunkIndex === 'string' ? Number(chunkIndex) : (chunkIndex as number);
+      const normalizedKey = String(chunkCacheKey).trim().replace(/^['"]|['"]$/g, "");
       return processChangeModeOutput(
-        "", // empty for cache...
-        chunkIndex as number,
-        chunkCacheKey as string,
+        "", // empty for cache path
+        indexNum,
+        normalizedKey,
         prompt as string
       );
     }

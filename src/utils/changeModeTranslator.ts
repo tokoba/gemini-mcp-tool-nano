@@ -46,7 +46,7 @@ Apply these edits in order. Each edit uses exact string matching, so the old_str
 **Next Step**: After applying the edits above, retrieve the next chunk (${chunkInfo.current + 1} of ${chunkInfo.total}) using:
 
 \`\`\`
-fetch-chunk cacheKey="${chunkInfo.cacheKey}" chunkIndex=${chunkInfo.current + 1}
+fetch-chunk cacheKey=${chunkInfo.cacheKey} chunkIndex=${chunkInfo.current + 1}
 \`\`\`
 
 There ${chunkInfo.total - chunkInfo.current === 1 ? 'is' : 'are'} ${chunkInfo.total - chunkInfo.current} more chunk${chunkInfo.total - chunkInfo.current === 1 ? '' : 's'} containing additional edits.
