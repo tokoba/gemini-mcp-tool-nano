@@ -11,7 +11,7 @@ const askGeminiArgsSchema = z.object({
     .string()
     .min(1)
     .describe(
-      "Analysis request. Use `@ syntax` (`@/absolute/filepath`) or `[filepath: /absolute/path]`to include files (e.g., '@/home/username/project/largefile.js explain what this does' or `read [filepath: /home/username/project/largefile.js] and review the duplicated functions`) or ask general questions. If the the rensponse size is big, use `fetch-chunk` tool (`fetch-chunk cacheKey=<key> chunkIndex=<number>`) to get all the chunks of the response."
+      "Analysis request. Use `@ syntax` (`@/{absolute_file_path}`) or `[filepath: /{absolute_file_path}]`to include files (e.g., '@/home/username/project/largefile.js explain what this does' or `read [filepath: /home/username/project/largefile.js] and review the duplicated functions`) or ask general questions. If the the rensponse size is big, use `fetch-chunk` tool (`fetch-chunk cacheKey=<key> chunkIndex=<number>`) to get all the chunks of the response."
     ),
   model: z
     .string()
@@ -61,8 +61,13 @@ export const askGeminiTool: UnifiedTool = {
     }
 
     if (changeMode && chunkIndex && chunkCacheKey) {
-      const indexNum = typeof chunkIndex === 'string' ? Number(chunkIndex) : (chunkIndex as number);
-      const normalizedKey = String(chunkCacheKey).trim().replace(/^['"]|['"]$/g, "");
+      const indexNum =
+        typeof chunkIndex === "string"
+          ? Number(chunkIndex)
+          : (chunkIndex as number);
+      const normalizedKey = String(chunkCacheKey)
+        .trim()
+        .replace(/^['"]|['"]$/g, "");
       return processChangeModeOutput(
         "", // empty for cache path
         indexNum,
