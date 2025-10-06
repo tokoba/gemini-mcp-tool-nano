@@ -17,3 +17,9 @@ docs/.vitepress/dist/
 # Desktop Extension build artifacts
 *.dxt
 extension-build/
+
+# fastembed
+.bastembed_cache/
+
+# codanna
+.codanna/
