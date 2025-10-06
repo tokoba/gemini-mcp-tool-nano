@@ -11,7 +11,7 @@ const askGeminiArgsSchema = z.object({
     .string()
     .min(1)
     .describe(
-      "Analysis request. Use `@ syntax` (`@/{absolute_file_path}`) or `[filepath: /{absolute_file_path}]`to include files (e.g., '@/home/username/project/largefile.js explain what this does' or `read [filepath: /home/username/project/largefile.js] and review the duplicated functions`) or ask general questions. If the the rensponse size is big, use `fetch-chunk` tool (`fetch-chunk cacheKey=<key> chunkIndex=<number>`) to get all the chunks of the response."
+      "Analysis request. Use @-syntax to include file or directory paths. For existing paths, prefer '@/absolute_path', '@/file.ext', or '@/directory'. For non-existing or conceptual references, intentionally use '@ ' (a space after '@') to avoid Gemini misinterpreting it as a path. You can also use the explicit form '[filepath: /absolute_file_path]'. Examples: '@/home/username/project/largefile.js explain what this does' or 'read [filepath: /home/username/project/largefile.js] and review the duplicated functions'. The server normalizes references: existing paths are rewritten to '@/...' and non-existing references become '@ ' to prevent errors. If the response is large, use the 'fetch-chunk' tool ('fetch-chunk cacheKey=<key> chunkIndex=<number>') to retrieve all chunks."
     ),
   model: z
     .string()

@@ -23,3 +23,6 @@ extension-build/
 
 # codanna
 .codanna/
+
+# reference_crates
+reference_crates/

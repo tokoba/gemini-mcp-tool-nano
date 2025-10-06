@@ -97,26 +97,21 @@ ${prompt_processed}
     args.push(CLI.FLAGS.SANDBOX);
   }
 
-  // For complex prompts (changeMode or with @ symbols), use stdin instead of -p flag
-  // This avoids all shell escaping issues with quotes and newlines
-  const useStdin = changeMode || prompt_processed.includes("@");
+  // セキュリティ向上: 常にstdin使用でコマンドインジェクション攻撃を防止
+  // V2: プロンプトはすべてstdin経由で渡す（シェルエスケープ問題を根本的に解決）
+  const useStdin = true; // 常にstdin使用
   let stdinData: string | undefined;
 
-  if (useStdin) {
-    // Pass prompt via stdin to avoid shell escaping issues
-    const finalPrompt = preprocessAtSymbols(prompt_processed);
+  // @ symbol processing
+  try {
+    const finalPrompt = await preprocessAtSymbols(prompt_processed);
     stdinData = finalPrompt;
     Logger.debug(
       `Using stdin for prompt (length: ${finalPrompt.length} chars)`
     );
-  } else {
-    // Simple prompts can use -p flag with proper escaping
-    const processedPrompt = preprocessAtSymbols(prompt_processed);
-    const escapedPrompt =
-      process.platform === "win32"
-        ? processedPrompt.replace(/"/g, '""') // Windows: escape quotes by doubling
-        : processedPrompt.replace(/"/g, '\\"'); // Unix: escape with backslash
-    args.push(CLI.FLAGS.PROMPT, `"${escapedPrompt}"`);
+  } catch (error) {
+    Logger.error(`@ symbol preprocessing failed: ${error}`);
+    throw error;
   }
 
   // Log the exact command being executed for debugging
@@ -149,15 +144,8 @@ ${prompt_processed}
         fallbackArgs.push(CLI.FLAGS.SANDBOX);
       }
 
-      // Use same stdin logic for fallback
-      if (!useStdin) {
-        const fallbackPrompt = preprocessAtSymbols(prompt_processed);
-        const escapedPrompt =
-          process.platform === "win32"
-            ? fallbackPrompt.replace(/"/g, '""')
-            : fallbackPrompt.replace(/"/g, '\\"');
-        fallbackArgs.push(CLI.FLAGS.PROMPT, `"${escapedPrompt}"`);
-      }
+      // V2: フォールバックでも常にstdin使用（セキュリティ統一）
+      // stdinDataは既に処理済みなので再利用
 
       // Log the fallback command being executed for debugging
       Logger.debug(

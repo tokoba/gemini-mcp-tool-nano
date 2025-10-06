@@ -1,129 +1,217 @@
-import * as fs from 'fs';
-import * as path from 'path';
 import { Logger } from './logger.js';
+import { 
+  FilepathProcessor, 
+  createDefaultFilepathProcessor, 
+  createLightweightFilepathProcessor,
+  DEFAULT_FILEPATH_CONFIG,
+  type FilepathProcessingConfig
+} from './filepath/index.js';
 
 /**
- * Prompt preprocessing utility for @ symbol handling.
- * Prevents file reference errors in Gemini CLI by performing
- * conditional escaping based on file existence checks.
- */
-
-/**
- * Regular expression to detect valid @ symbol patterns for filepaths.
- * Matches patterns starting with @ followed by filepath characters
- * (alphanumeric, slash, dot, hyphen, underscore).
- */
-const FILEPATH_PATTERN = /@([a-zA-Z0-9\/\.\-_]+)/g;
-
-/**
- * Preprocesses @ symbols in prompts with appropriate escaping.
+ * 智的@記号処理ユーティリティ
  * 
- * Processing logic:
- * 1. Detect @filepath patterns
- * 2. Check file existence
- * 3. If exists → keep as-is (valid file reference)
- * 4. If not exists → escape with \@ (prevent parse errors)
+ * 機能:
+ * - 堅牢なセキュリティ検証
+ * - クロスプラットフォーム対応
+ * - Unicode/国際化サポート
+ * - 階層化された正規表現システム
+ */
+
+/**
+ * プロセッサ設定
+ */
+export interface PreprocessorConfig {
+  lightweightMode: boolean;      // 軽量モード（パフォーマンス重視）
+  filepathConfig?: Partial<FilepathProcessingConfig>; // ファイルパス処理設定
+}
+
+/**
+ * デフォルト設定
+ */
+const DEFAULT_PREPROCESSOR_CONFIG: PreprocessorConfig = {
+  lightweightMode: false,
+  filepathConfig: DEFAULT_FILEPATH_CONFIG
+};
+
+/**
+ * 設定可能なプロセッサインスタンス
+ */
+let currentConfig: PreprocessorConfig = { ...DEFAULT_PREPROCESSOR_CONFIG };
+let processor: FilepathProcessor | null = null;
+
+/**
+ * @記号を含むプロンプトを処理
+ * 
+ * 処理ロジック:
+ * 1. 階層化されたパターン検出（explicit > general > filename）
+ * 2. セキュリティ検証（ディレクトリトラバーサル、許可ディレクトリ）
+ * 3. クロスプラットフォーム対応（Windows, Unix, WSL, Cygwin）
+ * 4. Unicode/国際化サポート
+ * 5. インテリジェントな@記号処理
  * 
  * @param prompt The prompt string to process
- * @param workingDir Base working directory for relative path resolution
- * @returns Prompt string with @ symbols properly escaped
+ * @param config Optional configuration for processing behavior
+ * @returns Prompt string with @ symbols properly processed
  */
-export function preprocessAtSymbols(prompt: string, workingDir: string = process.cwd()): string {
-  let processedPrompt = prompt;
-  
-  // Detect and collect @filepath patterns
-  const matches = [...prompt.matchAll(FILEPATH_PATTERN)];
-  
-  if (matches.length === 0) {
-    Logger.debug('promptPreprocessor: No @ symbol patterns found');
-    return processedPrompt;
+export async function preprocessAtSymbols(
+  prompt: string,
+  config?: Partial<PreprocessorConfig>
+): Promise<string> {
+  // 設定の更新
+  if (config) {
+    updatePreprocessorConfig(config);
   }
-  
-  Logger.debug(`promptPreprocessor: Detected ${matches.length} @ symbol patterns`);
-  
-  // Validate each @filepath pattern
-  for (const match of matches) {
-    const fullMatch = match[0]; // @filepath
-    const filepath = match[1];   // filepath portion
-    
-    try {
-      // Convert relative path to absolute path
-      const absolutePath = path.isAbsolute(filepath) 
-        ? filepath 
-        : path.resolve(workingDir, filepath);
-      
-      // Check file existence
-      const fileExists = fs.existsSync(absolutePath);
-      
-      if (fileExists) {
-        Logger.debug(`promptPreprocessor: File exists - ${filepath} ✓ (keeping as valid reference)`);
-        // Keep unchanged if file exists (Gemini CLI will expand the file)
-      } else {
-        Logger.debug(`promptPreprocessor: File not found - ${filepath} ✗ (escaping)`);
-        // Escape with \@ if file doesn't exist
-        processedPrompt = processedPrompt.replace(fullMatch, `\\${fullMatch}`);
-      }
-    } catch (error) {
-      // Escape on path resolution errors too
-      Logger.debug(`promptPreprocessor: Path resolution error - ${filepath} (escaping): ${error}`);
-      processedPrompt = processedPrompt.replace(fullMatch, `\\${fullMatch}`);
-    }
-  }
-  
-  return processedPrompt;
+
+  return await processAtSymbols(prompt);
 }
 
 /**
- * Test helper function for @ symbol processing.
- * Logs detailed differences before and after processing.
- * 
- * @param prompt The prompt to test
- * @param workingDir Working directory
- * @returns Detailed processing results
+ * @記号処理の実装
  */
-export function debugAtSymbolProcessing(prompt: string, workingDir: string = process.cwd()): {
-  original: string;
-  processed: string;
-  changes: Array<{ pattern: string; action: 'kept' | 'escaped'; reason: string }>;
-} {
-  const original = prompt;
-  const matches = [...prompt.matchAll(FILEPATH_PATTERN)];
-  const changes: Array<{ pattern: string; action: 'kept' | 'escaped'; reason: string }> = [];
-  
-  for (const match of matches) {
-    const fullMatch = match[0];
-    const filepath = match[1];
-    
-    try {
-      const absolutePath = path.isAbsolute(filepath) 
-        ? filepath 
-        : path.resolve(workingDir, filepath);
+async function processAtSymbols(prompt: string): Promise<string> {
+  try {
+    // プロセッサの初期化（必要に応じて）
+    if (!processor) {
+      processor = currentConfig.lightweightMode 
+        ? createLightweightFilepathProcessor()
+        : createDefaultFilepathProcessor();
       
-      const fileExists = fs.existsSync(absolutePath);
-      
-      if (fileExists) {
-        changes.push({
-          pattern: fullMatch,
-          action: 'kept',
-          reason: `File exists: ${absolutePath}`
-        });
-      } else {
-        changes.push({
-          pattern: fullMatch,
-          action: 'escaped',
-          reason: `File not found: ${absolutePath}`
-        });
+      if (currentConfig.filepathConfig) {
+        processor.updateConfig(currentConfig.filepathConfig);
       }
-    } catch (error) {
-      changes.push({
-        pattern: fullMatch,
-        action: 'escaped',
-        reason: `Path resolution error: ${error}`
-      });
+    }
+
+    Logger.debug('promptPreprocessor: Processing @ symbols');
+    
+    const result = await processor.processContent(prompt);
+    
+    Logger.debug(`promptPreprocessor: Processing complete. ${result.modifications.length} modifications made`);
+    
+    // 詳細ログ出力
+    for (const modification of result.modifications) {
+      Logger.debug(`promptPreprocessor: ${modification.action} - ${modification.original} → ${modification.modified} (${modification.reason})`);
+    }
+
+    return result.processedContent;
+    
+  } catch (error) {
+    Logger.error(`promptPreprocessor: Processing failed: ${error}`);
+    throw error;
+  }
+}
+
+
+/**
+ * 設定を更新
+ * @param config 新しい設定
+ */
+export function updatePreprocessorConfig(config: Partial<PreprocessorConfig>): void {
+  // ネストされたfilepathConfigを正しくマージする
+  const newFilepathConfig: Partial<FilepathProcessingConfig> = config.filepathConfig
+    ? {
+        // 既存のfilepathConfigを維持
+        ...(currentConfig.filepathConfig || {}),
+        // 新しいfilepathConfig設定をマージ
+        ...config.filepathConfig,
+        // securityオブジェクトをディープマージ
+        security: {
+          ...DEFAULT_FILEPATH_CONFIG.security,
+          ...(currentConfig.filepathConfig?.security || {}),
+          ...(config.filepathConfig.security || {}),
+        },
+      }
+    : (currentConfig.filepathConfig || {});
+
+  // 全体の設定を更新
+  currentConfig = {
+    ...currentConfig,
+    ...config,
+    filepathConfig: newFilepathConfig,
+  };
+  
+  // プロセッサのリセット（設定変更時）
+  if (processor) {
+    if (config.filepathConfig) {
+      // マージ後の完全な設定をプロセッサに渡す
+      processor.updateConfig(currentConfig.filepathConfig!);
+    } else if (config.lightweightMode !== undefined) {
+      processor = null; // 再初期化を促す
     }
   }
   
-  const processed = preprocessAtSymbols(prompt, workingDir);
-  
-  return { original, processed, changes };
+  Logger.debug('promptPreprocessor: Configuration updated', currentConfig);
+  // デバッグ用に更新後のセキュリティ設定をログ出力
+  if (config.filepathConfig?.security) {
+    Logger.debug('promptPreprocessor: Security config updated:', currentConfig.filepathConfig?.security);
+  }
 }
+
+/**
+ * 現在の設定を取得
+ * @returns 現在の設定
+ */
+export function getPreprocessorConfig(): PreprocessorConfig {
+  return { ...currentConfig };
+}
+
+/**
+ * 軽量モードを設定（便利関数）
+ * @param lightweight 軽量モードを使用するか
+ */
+export function setLightweightMode(lightweight: boolean = false): void {
+  updatePreprocessorConfig({
+    lightweightMode: lightweight
+  });
+}
+
+/**
+ * @記号処理のデバッグヘルパー関数
+ * 
+ * @param prompt The prompt to test
+ * @returns Detailed processing results
+ */
+export async function debugAtSymbolProcessing(
+  prompt: string
+): Promise<{
+  original: string;
+  processed: string;
+  changes: Array<{ pattern: string; action: string; reason: string }>;
+  statistics?: any;
+}> {
+  const original = prompt;
+  
+  try {
+    const tempProcessor = currentConfig.lightweightMode 
+      ? createLightweightFilepathProcessor()
+      : createDefaultFilepathProcessor();
+    
+    // Apply the current configuration to the temporary processor for accurate debugging
+    // これにより、デバッグ実行が実際の前処理と同じ設定を使用することが保証されます
+    if (currentConfig.filepathConfig) {
+      tempProcessor.updateConfig(currentConfig.filepathConfig);
+      Logger.debug('debugAtSymbolProcessing: Applied current filepathConfig to tempProcessor:', JSON.stringify(currentConfig.filepathConfig, null, 2));
+    } else {
+      Logger.debug('debugAtSymbolProcessing: No specific filepathConfig to apply to tempProcessor. Using defaults.');
+    }
+    
+    const result = await tempProcessor.processContent(prompt);
+    const statistics = await tempProcessor.getStatistics(prompt);
+    
+    const changes = result.modifications.map((mod: any) => ({
+      pattern: mod.original,
+      action: mod.action,
+      reason: mod.reason
+    }));
+    
+    return {
+      original,
+      processed: result.processedContent,
+      changes,
+      statistics
+    };
+  } catch (error) {
+    Logger.error(`debugAtSymbolProcessing: Processing failed: ${error}`);
+    throw error;
+  }
+}
+
