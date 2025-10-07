@@ -656,4 +656,365 @@ describe('commandExecutor', () => {
       process.env = originalEnv;
     });
   });
+
+  describe('RESOURCE_EXHAUSTED エラー処理', () => {
+    test('Gemini quota exceeded エラーの検出と詳細レポート', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 1
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('gemini', ['-m', 'gemini-2.5-pro', 'test']);
+
+      // RESOURCE_EXHAUSTEDエラーをstderrに出力
+      const errorMessage = `Error: RESOURCE_EXHAUSTED: Quota exceeded for quota metric 'GenerateContentRequestsPerMinutePerProject' for project 'example-project'. status: 429, "reason": "rateLimitExceeded"`;
+      stderr.emit('data', Buffer.from(errorMessage));
+      stderr.emit('end');
+      
+      stdout.emit('end');
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow('Command failed with exit code 1');
+      
+      // Loggerのerrorメソッドが詳細なJSON情報と共に呼ばれることを確認
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Gemini Quota Error:')
+      );
+    });
+
+    test('部分的なRESOURCE_EXHAUSTEDエラー情報の処理', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 1
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('gemini', ['-m', 'gemini-2.5-flash', 'test']);
+
+      // 部分的なエラー情報（modelやreasonが検出できない場合）
+      const errorMessage = `Error: RESOURCE_EXHAUSTED: Quota exceeded`;
+      stderr.emit('data', Buffer.from(errorMessage));
+      stderr.emit('end');
+      
+      stdout.emit('end');
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow('Command failed with exit code 1');
+      
+      // デフォルト値でエラーがレポートされることを確認
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Gemini Quota Error:')
+      );
+    });
+
+    test('複数のエラーパターンの処理', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 1
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('gemini', ['--test']);
+
+      // 段階的にエラー情報を追加
+      stderr.emit('data', Buffer.from('Error: RESOURCE_EXHAUSTED: '));
+      stderr.emit('data', Buffer.from('Quota exceeded for quota metric \'ChatCompletionsPerMinute\''));
+      stderr.emit('data', Buffer.from(' status: 429'));
+      stderr.emit('data', Buffer.from(' "reason": "rateLimitExceeded"'));
+      stderr.emit('end');
+      
+      stdout.emit('end');
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow('Command failed with exit code 1');
+      
+      expect(mockLogger.error).toHaveBeenCalledWith(
+        expect.stringContaining('Gemini Quota Error:')
+      );
+    });
+
+    test('RESOURCE_EXHAUSTED以外のstderrメッセージは通常処理', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 1
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('test-command', []);
+
+      stderr.emit('data', Buffer.from('Warning: This is just a warning'));
+      stderr.emit('data', Buffer.from('Error: Regular error message'));
+      stderr.emit('end');
+      
+      stdout.emit('end');
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow('Command failed with exit code 1');
+      
+      // RESOURCE_EXHAUSTED専用のエラーレポートは呼ばれない
+      expect(mockLogger.error).not.toHaveBeenCalledWith(
+        expect.stringContaining('Gemini Quota Error:')
+      );
+    });
+  });
+
+  describe('プロセス制御とタイムアウト', () => {
+    test('プロセス終了後の重複解決防止', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 0
+      });
+
+      // イベントハンドラを手動で制御するための設定
+      const eventHandlers: Record<string, Function[]> = {};
+      mockProcess.on.mockImplementation((event: string, callback: Function) => {
+        if (!eventHandlers[event]) eventHandlers[event] = [];
+        eventHandlers[event].push(callback);
+        return mockProcess;
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('test', []);
+
+      stdout.emit('data', Buffer.from('success'));
+      stdout.emit('end');
+
+      // 最初のclose（成功）
+      setTimeout(() => {
+        eventHandlers['close']?.forEach(cb => cb(0));
+      }, 0);
+
+      jest.advanceTimersByTime(0);
+      const result = await promise;
+      expect(result).toBe('success');
+
+      // 遅延したerrorイベント（無視されるべき）
+      setTimeout(() => {
+        eventHandlers['error']?.forEach(cb => cb(new Error('Delayed error')));
+      }, 100);
+
+      jest.advanceTimersByTime(100);
+      
+      // エラーログが呼ばれていないことを確認（すでに解決済みのため）
+      expect(mockLogger.error).not.toHaveBeenCalledWith(
+        expect.stringContaining('Process error:')
+      );
+    });
+
+    test('プロセスkillメソッドの存在確認', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 0
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('test', []);
+
+      // killメソッドが定義されていることを確認
+      expect(typeof mockProcess.kill).toBe('function');
+      
+      stdout.emit('data', Buffer.from('output'));
+      stdout.emit('end');
+      jest.advanceTimersByTime(0);
+
+      await promise;
+    });
+  });
+
+  describe('ストリーム処理の詳細', () => {
+    test('progressコールバックでの段階的な出力レポート', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 0
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const progressUpdates: string[] = [];
+      const progressCallback = jest.fn((update: string) => {
+        progressUpdates.push(update);
+      });
+
+      const promise = executeCommand('streaming-test', [], progressCallback);
+
+      // 段階的にデータを送信
+      stdout.emit('data', Buffer.from('First '));
+      stdout.emit('data', Buffer.from('chunk '));
+      stdout.emit('data', Buffer.from('of '));
+      stdout.emit('data', Buffer.from('output'));
+      stdout.emit('end');
+      
+      jest.advanceTimersByTime(0);
+
+      const result = await promise;
+      expect(result).toBe('First chunk of output');
+      
+      // 各段階での新しい内容のみがprogressで報告されることを確認
+      expect(progressCallback).toHaveBeenNthCalledWith(1, 'First ');
+      expect(progressCallback).toHaveBeenNthCalledWith(2, 'chunk ');
+      expect(progressCallback).toHaveBeenNthCalledWith(3, 'of ');
+      expect(progressCallback).toHaveBeenNthCalledWith(4, 'output');
+      expect(progressCallback).toHaveBeenCalledTimes(4);
+    });
+
+    test('progressコールバックなしでの通常動作', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 0
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('no-progress-test', []);
+
+      stdout.emit('data', Buffer.from('output without progress'));
+      stdout.emit('end');
+      
+      jest.advanceTimersByTime(0);
+
+      const result = await promise;
+      expect(result).toBe('output without progress');
+    });
+
+    test('空のstdoutからの正常な結果', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 0
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('empty-output', []);
+
+      // データなしで終了
+      stdout.emit('end');
+      jest.advanceTimersByTime(0);
+
+      const result = await promise;
+      expect(result).toBe('');
+    });
+  });
+
+  describe('詳細なエラーケース', () => {
+    test('stderrのみでの詳細エラーメッセージ', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 1
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('error-command', []);
+
+      stderr.emit('data', Buffer.from('Detailed error: Permission denied'));
+      stderr.emit('end');
+      stdout.emit('end');
+      
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow(
+        'Command failed with exit code 1: Detailed error: Permission denied'
+      );
+    });
+
+    test('stderrが空でのエラー', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      const mockProcess = createMockChildProcess({
+        stdout,
+        stderr,
+        exitCode: 2
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('silent-error', []);
+
+      stderr.emit('end');
+      stdout.emit('end');
+      
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow(
+        'Command failed with exit code 2: Unknown error'
+      );
+    });
+
+    test('nullでのexit code処理', async () => {
+      const stdout = createMockReadableStream();
+      const stderr = createMockReadableStream();
+      
+      // イベントハンドラを手動で制御するための設定
+      const eventHandlers: Record<string, Function[]> = {};
+      const mockProcess = {
+        stdout,
+        stderr,
+        stdin: null,
+        on: jest.fn(),
+        kill: jest.fn()
+      } as any;
+
+      mockProcess.on.mockImplementation((event: string, callback: Function) => {
+        if (!eventHandlers[event]) eventHandlers[event] = [];
+        eventHandlers[event].push(callback);
+        return mockProcess;
+      });
+
+      mockSpawn.mockReturnValue(mockProcess as any);
+
+      const promise = executeCommand('null-exit', []);
+
+      stdout.emit('data', Buffer.from('output'));
+      stdout.emit('end');
+      stderr.emit('end');
+      
+      // nullを明示的にcloseイベントで送信
+      setTimeout(() => {
+        eventHandlers['close']?.forEach(cb => cb(null));
+      }, 0);
+      
+      jest.advanceTimersByTime(0);
+
+      await expect(promise).rejects.toThrow(
+        'Command failed with exit code null'
+      );
+    });
+  });
 });

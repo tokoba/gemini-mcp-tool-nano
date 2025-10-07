@@ -4,7 +4,8 @@ import {
   createDefaultFilepathProcessor, 
   createLightweightFilepathProcessor,
   DEFAULT_FILEPATH_CONFIG,
-  type FilepathProcessingConfig
+  type FilepathProcessingConfig,
+  type PathModification
 } from './filepath/index.js';
 
 /**
@@ -176,7 +177,13 @@ export async function debugAtSymbolProcessing(
   original: string;
   processed: string;
   changes: Array<{ pattern: string; action: string; reason: string }>;
-  statistics?: any;
+  statistics?: {
+    totalAtSymbols: number;
+    detectedPaths: number;
+    validPaths: number;
+    safePaths: number;
+    byType: Record<string, number>;
+  };
 }> {
   const original = prompt;
   
@@ -197,7 +204,7 @@ export async function debugAtSymbolProcessing(
     const result = await tempProcessor.processContent(prompt);
     const statistics = await tempProcessor.getStatistics(prompt);
     
-    const changes = result.modifications.map((mod: any) => ({
+    const changes = result.modifications.map((mod: PathModification) => ({
       pattern: mod.original,
       action: mod.action,
       reason: mod.reason

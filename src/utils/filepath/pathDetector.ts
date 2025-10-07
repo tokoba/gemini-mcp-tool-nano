@@ -246,7 +246,7 @@ export class PathDetector {
           const platform = this.detectPlatform(filePath);
           
           // プラットフォームサポートチェック
-          if (!this.config.platformSupport.includes(platform as any) && platform !== 'unknown') {
+          if (!this.config.platformSupport.includes(platform as 'windows' | 'unix' | 'cygwin' | 'wsl') && platform !== 'unknown') {
             continue;
           }
 

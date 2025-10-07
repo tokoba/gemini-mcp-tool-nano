@@ -19,6 +19,19 @@ import {
 import { PROTOCOL, ToolArguments } from "./constants.js";
 import { Logger } from "./utils/logger.js";
 
+// Interface for notification parameters
+interface NotificationParams {
+  [key: string]: unknown;
+}
+
+// Interface for progress notification parameters
+interface ProgressParams {
+  progressToken: string | number;
+  progress: number;
+  total?: number;
+  message?: string;
+}
+
 import {
   executeTool,
   getPromptDefinitions,
@@ -46,7 +59,7 @@ let isProcessing = false;
 let currentOperationName = "";
 let latestOutput = "";
 
-async function sendNotification(method: string, params: any) {
+async function sendNotification(method: string, params: NotificationParams) {
   try {
     await server.notification({ method, params });
   } catch (error) {
@@ -69,7 +82,7 @@ async function sendProgressNotification(
   if (!progressToken) return; // Only send if client requested progress
 
   try {
-    const params: any = {
+    const params: ProgressParams = {
       progressToken,
       progress,
     };
@@ -182,7 +195,7 @@ server.setRequestHandler(
 
     if (toolExists(toolName)) {
       // Check if client requested progress updates
-      const progressToken = (request.params as any)._meta?.progressToken;
+      const progressToken = (request.params as ToolArguments & { _meta?: { progressToken?: string | number } })?._meta?.progressToken;
 
       // Start progress updates if client requested them
       const progressData = startProgressUpdates(toolName, progressToken);

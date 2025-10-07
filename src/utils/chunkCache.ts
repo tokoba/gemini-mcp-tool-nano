@@ -8,11 +8,11 @@ import * as path from 'path';
 import * as os from 'os';
 import { randomUUID } from 'crypto';
 import { countTokens } from './tokenizer.js';
+import { Logger } from './logger.js';
 
-function debugLog(...args: any[]) {
+function debugLog(...args: unknown[]) {
   if (process.env.CHUNK_CACHE_DEBUG === '1') {
-    // eslint-disable-next-line no-console
-    console.debug('[chunkCache]', ...args);
+    Logger.debug(`[chunkCache] ${args.join(' ')}`);
   }
 }
 
@@ -60,8 +60,8 @@ async function restorePublicLink(cacheKey: string): Promise<boolean> {
       await createSecureDirectory(publicBase);
       try {
         await fs.promises.symlink(target, linkPath, 'dir');
-      } catch (e: any) {
-        if (e && e.code === 'EPERM') {
+      } catch (e: unknown) {
+        if (e && typeof e === 'object' && 'code' in e && (e as {code: string}).code === 'EPERM') {
           // フォールバック：コピー
           await createSecureDirectory(linkPath);
           const files = await fs.promises.readdir(target);
@@ -158,9 +158,9 @@ async function createSecureDirectory(dirPath: string): Promise<void> {
       await fs.promises.mkdir(dirPath, { mode: 0o700, recursive: true });
       // 成功 or 既に存在
       return;
-    } catch (error: any) {
+    } catch (error: unknown) {
       // すでに存在 → OK
-      if (error && error.code === 'EEXIST') {
+      if (error && typeof error === 'object' && 'code' in error && (error as {code: string}).code === 'EEXIST') {
         return;
       }
       // 一時的なENOENT/ENOTDIR（親ディレクトリの並行削除等）→ リトライ
@@ -280,9 +280,10 @@ export async function saveChunks(
         try {
           await fs.promises.rename(tempDir, storageFinalDir);
           storageFinalReady = true;
-        } catch (renameErr: any) {
+        } catch (renameErr: unknown) {
           // 既に存在している場合や一時的な不整合を吸収
-          if (renameErr && (renameErr.code === 'EEXIST' || renameErr.code === 'ENOTEMPTY')) {
+          if (renameErr && typeof renameErr === 'object' && 'code' in renameErr && 
+              ((renameErr as {code: string}).code === 'EEXIST' || (renameErr as {code: string}).code === 'ENOTEMPTY')) {
             try {
               await fs.promises.access(storageFinalDir, fs.constants.F_OK);
               const metaText = await fs.promises.readFile(path.join(storageFinalDir, 'metadata.json'), 'utf8');
@@ -313,9 +314,9 @@ export async function saveChunks(
             try { await createSecureDirectory(path.dirname(finalDir)); } catch {}
             await fs.promises.symlink(storageFinalDir, finalDir, 'dir');
             break;
-          } catch (e: any) {
+          } catch (e: unknown) {
             // 既に存在 → 置き換え
-            if (e && e.code === 'EEXIST') {
+            if (e && typeof e === 'object' && 'code' in e && (e as {code: string}).code === 'EEXIST') {
               try { await fs.promises.rm(finalDir, { recursive: true, force: true }); } catch {}
               continue; // 次のループで再試行
             }
@@ -356,7 +357,7 @@ export async function saveChunks(
           JSON.parse(content);
           debugLog('post-rename metadata visible', { finalMetadataPath, attempts: postRenameAttempts + 1 });
           break;
-        } catch (accessError: any) {
+        } catch (accessError: unknown) {
           postRenameAttempts++;
           if (postRenameAttempts >= maxPostRenameAttempts) {
             throw accessError;
@@ -366,12 +367,12 @@ export async function saveChunks(
       }
 
       return { cacheKey, chunkCount: chunks.length, totalSize: totalTokens };
-    } catch (error: any) {
+    } catch (error: unknown) {
       // 失敗時のクリーンアップ
       try {
         await fs.promises.rm(tempDir, { recursive: true, force: true });
       } catch (cleanupError) {
-        console.warn(`Failed to cleanup temp directory: ${tempDir}`, cleanupError);
+        Logger.warn(`Failed to cleanup temp directory: ${tempDir}`, cleanupError);
       }
 
       if (error && (error.code === 'ENOENT' || error.code === 'ENOTDIR')) {
@@ -392,8 +393,8 @@ export async function saveChunks(
 /**
  * 指定されたチャンクを取得
  */
-export async function getChunk(cacheKey: string, chunkIndex: number): Promise<string | null> {
-  if (chunkIndex < 1) {
+export async function getChunk(cacheKey: string, chunkIndex: number, isRetry = false): Promise<string | null> {
+  if (chunkIndex < 1 || !Number.isInteger(chunkIndex) || isNaN(chunkIndex)) {
     throw new Error('Chunk index must be 1 or greater');
   }
 
@@ -456,12 +457,12 @@ export async function getChunk(cacheKey: string, chunkIndex: number): Promise<st
     // フォールバック: 公開リンクが消えている場合、ストレージ側を探索して再生成
     const isFsNotFound = (error instanceof Error && 'code' in error && (error as any).code && ((error as any).code === 'ENOENT' || (error as any).code === 'ENOTDIR'))
       || (error && typeof error === 'object' && 'code' in error && ((error as any).code === 'ENOENT' || (error as any).code === 'ENOTDIR'));
-    if (isFsNotFound) {
+    if (isFsNotFound && !isRetry) {
       try {
         const restored = await restorePublicLink(cacheKey);
         if (restored) {
-          // リンクを再生成できたので、もう一度読み直す
-          return await getChunk(cacheKey, chunkIndex);
+          // リンクを再生成できたので、もう一度読み直す（再帰防止でisRetryをtrueに）
+          return await getChunk(cacheKey, chunkIndex, true);
         }
       } catch {}
       throw new Error(`Cache not found: directory or metadata file does not exist for cache ID '${cacheKey}'`);
@@ -503,11 +504,11 @@ export async function cleanupExpired(): Promise<number> {
         }
       } catch (error) {
         // 個別のディレクトリ処理エラーは警告レベル
-        console.warn(`Failed to process cache directory: ${entry.name}`, error);
+        Logger.warn(`Failed to process cache directory: ${entry.name}`, error);
       }
     }
   } catch (error) {
-    console.error('Failed to cleanup expired caches:', error);
+    Logger.error('Failed to cleanup expired caches:', error);
     throw error;
   }
 
@@ -546,13 +547,13 @@ export async function getCacheStats(): Promise<{
           }
         } catch (error) {
           // 個別の統計取得エラーは無視
-          console.warn(`Failed to get stats for directory: ${entry.name}`, error);
+          Logger.warn(`Failed to get stats for directory: ${entry.name}`, error);
         }
       }
     }
   } catch (error) {
     // 統計取得の失敗は警告レベル
-    console.warn('Failed to get cache stats:', error);
+    Logger.warn('Failed to get cache stats:', error);
   }
 
   return {
@@ -594,7 +595,7 @@ async function enforceCapacityLimits(): Promise<void> {
         try {
           await fs.promises.rm(path.join(baseDir, entry.name), { recursive: true, force: true });
         } catch (deleteError) {
-          console.warn(`Failed to delete invalid cache directory: ${entry.name}`, deleteError);
+          Logger.warn(`Failed to delete invalid cache directory: ${entry.name}`, deleteError);
         }
       }
     }
@@ -608,7 +609,7 @@ async function enforceCapacityLimits(): Promise<void> {
         try {
           await fs.promises.rm(path.join(baseDir, cache.name), { recursive: true, force: true });
         } catch (error) {
-          console.warn(`Failed to delete cache directory: ${cache.name}`, error);
+          Logger.warn(`Failed to delete cache directory: ${cache.name}`, error);
         }
       }
     }
@@ -618,12 +619,12 @@ async function enforceCapacityLimits(): Promise<void> {
     if (validCaches.length > MAX_CACHE_DIRS) {
       const stats = await getCacheStats();
       if (stats.totalSize > MAX_CACHE_SIZE) {
-        console.warn(`Cache size (${stats.totalSize} bytes) exceeds limit (${MAX_CACHE_SIZE} bytes)`);
+        Logger.warn(`Cache size (${stats.totalSize} bytes) exceeds limit (${MAX_CACHE_SIZE} bytes)`);
       }
     }
 
   } catch (error) {
-    console.warn('Failed to enforce capacity limits:', error);
+    Logger.warn('Failed to enforce capacity limits:', error);
   }
 }
 
@@ -635,10 +636,10 @@ export function startPeriodicCleanup(intervalMs: number = 60 * 60 * 1000): NodeJ
     try {
       const deletedCount = await cleanupExpired();
       if (deletedCount > 0) {
-        console.log(`Cleaned up ${deletedCount} expired cache entries`);
+        Logger.log(`Cleaned up ${deletedCount} expired cache entries`);
       }
     } catch (error) {
-      console.error('Periodic cleanup failed:', error);
+      Logger.error('Periodic cleanup failed:', error);
     }
   }, intervalMs);
 }
@@ -650,9 +651,9 @@ export async function initializeCache(): Promise<void> {
   try {
     const deletedCount = await cleanupExpired();
     if (deletedCount > 0) {
-      console.log(`Startup cleanup: removed ${deletedCount} expired cache entries`);
+      Logger.log(`Startup cleanup: removed ${deletedCount} expired cache entries`);
     }
   } catch (error) {
-    console.warn('Startup cache cleanup failed:', error);
+    Logger.warn('Startup cache cleanup failed:', error);
   }
 }

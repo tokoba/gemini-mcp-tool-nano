@@ -103,7 +103,7 @@ export const DEFAULT_FILEPATH_CONFIG: FilepathProcessingConfig = {
  * 統合ファイルパス処理クラス
  */
 export class FilepathProcessor {
-  private readonly atSyntaxProcessor: any;
+  private readonly atSyntaxProcessor: AtSyntaxProcessor;
   private readonly config: FilepathProcessingConfig;
 
   constructor(config: Partial<FilepathProcessingConfig> = {}) {

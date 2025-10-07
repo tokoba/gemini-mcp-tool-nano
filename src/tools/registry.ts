@@ -4,6 +4,20 @@ import { ToolArguments } from "../constants.js";
 import { ZodTypeAny, ZodError } from "zod";
 import { zodToJsonSchema } from "zod-to-json-schema";
 
+// Type for JSON schema objects returned by zodToJsonSchema
+interface JsonSchemaProperty {
+  description?: string;
+  type?: string;
+  [key: string]: unknown;
+}
+
+interface JsonSchemaObject {
+  properties?: Record<string, JsonSchemaProperty>;
+  required?: string[];
+  definitions?: Record<string, JsonSchemaObject>;
+  [key: string]: unknown;
+}
+
 export interface UnifiedTool {
   name: string;
   description: string;
@@ -28,7 +42,7 @@ export function toolExists(toolName: string): boolean {
 }
 export function getToolDefinitions(): Tool[] { // get Tool definitions from registry
   return toolRegistry.map(tool => {
-    const raw = zodToJsonSchema(tool.zodSchema, tool.name) as any;
+    const raw = zodToJsonSchema(tool.zodSchema, tool.name) as JsonSchemaObject;
     const def = raw.definitions?.[tool.name] ?? raw;
     const inputSchema: Tool['inputSchema'] = {
       type: "object",
@@ -45,11 +59,11 @@ export function getToolDefinitions(): Tool[] { // get Tool definitions from regi
 }
 
 function extractPromptArguments(zodSchema: ZodTypeAny): Array<{name: string; description: string; required: boolean}> {
-  const jsonSchema = zodToJsonSchema(zodSchema) as any;
+  const jsonSchema = zodToJsonSchema(zodSchema) as JsonSchemaObject;
   const properties = jsonSchema.properties || {};
   const required = jsonSchema.required || [];
   
-  return Object.entries(properties).map(([name, prop]: [string, any]) => ({
+  return Object.entries(properties).map(([name, prop]: [string, JsonSchemaProperty]) => ({
     name,
     description: prop.description || `${name} parameter`,
     required: required.includes(name)
@@ -78,7 +92,7 @@ export async function executeTool(toolName: string, args: ToolArguments, onProgr
   }
 }
 
-export function getPromptMessage(toolName: string, args: Record<string, any>): string {
+export function getPromptMessage(toolName: string, args: Record<string, unknown>): string {
   const tool = toolRegistry.find(t => t.name === toolName);
   if (!tool?.prompt) {
     throw new Error(`No prompt defined for tool: ${toolName}`);

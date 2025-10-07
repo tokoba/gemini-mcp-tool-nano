@@ -4,6 +4,7 @@
  */
 
 import { countTokens, sliceByTokenLimit, TokenizerConfig } from './tokenizer.js';
+import { Logger } from './logger.js';
 
 export interface ChunkingOptions {
   maxTokens: number;            // 各チャンクの最大トークン数
@@ -65,7 +66,7 @@ export function chunkText(text: string, opts: ChunkingOptions): string[] {
 
   // 安全制限の適用
   if (chunks.length > maxChunks) {
-    console.warn(`Chunk count (${chunks.length}) exceeded maxChunks (${maxChunks}). Truncating.`);
+    Logger.warn(`Chunk count (${chunks.length}) exceeded maxChunks (${maxChunks}). Truncating.`);
     return chunks.slice(0, maxChunks);
   }
 
