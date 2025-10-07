@@ -12,9 +12,23 @@ total: 1108 tokens
 ```sh
 > /context
  MCP tools · /mcp
- └ mcp__gemini-cli__ask-gemini (gemini-cli): 631 tokens
+ └ mcp__gemini-cli__ask (gemini-cli): 631 tokens
  └ mcp__gemini-cli__fetch-chunk (gemini-cli): 457 tokens
 ```
+
+## Key Features
+
+### Token-Based Response Chunking
+- **Large Response Handling**: Automatically chunks Gemini responses exceeding 16,000 tokens into manageable pieces
+- **Seamless Continuation**: Use `fetch-chunk` tool to retrieve subsequent chunks from cached responses
+- **Cross-Platform Cache**: Secure UUID-based file caching with 24-hour TTL on all platforms
+- **Multilingual Support**: UTF-8 safe processing for Japanese, Chinese, Korean, and emoji content
+
+### Security & Performance
+- **Path Traversal Protection**: Prevents malicious cache key attempts
+- **Atomic Cache Operations**: Ensures data integrity during cache creation
+- **Automatic Cleanup**: Expired cache cleanup and capacity management
+- **Progress Tracking**: Real-time progress notifications for long operations
 
 ## setup
 
@@ -176,11 +190,12 @@ After updating the configuration, restart your terminal session.
 
 ## Usage Examples
 
-### With File References (using @ syntax)
+### With File References (using filepath syntax)
 
-- `ask gemini to analyze @src/main.js and explain what it does`
-- `use gemini to summarize @. the current directory`
-- `analyze @package.json and tell me about dependencies`
+- `ask gemini to analyze [filepath: /path/to/src/main.js] and explain what it does`
+- `use gemini to summarize [filepath: .] the current directory`
+- `analyze [filepath: /path/to/package.json] and tell me about dependencies`
+- `review [filepath: /path/to/large-file.txt] and provide a comprehensive analysis`
 
 ### General Questions (without files)
 
@@ -197,18 +212,42 @@ The sandbox mode allows you to safely test code changes, run scripts, or execute
 - `use gemini sandbox to install numpy and create a data visualization`
 - `test this code safely: Create a script that makes HTTP requests to an API`
 
+### Handling Large Responses
+
+When Gemini provides extensive analysis (>16,000 tokens), responses are automatically chunked:
+
+1. **Initial Response**: Contains first chunk and metadata:
+   ```json
+   {
+     "isChunked": true,
+     "cacheId": "abc-123-def",
+     "totalChunks": 3,
+     "chunkNumber": 1,
+     "content": "First part of the analysis..."
+   }
+   ```
+
+2. **Continuation**: Use `fetch-chunk` to get remaining chunks:
+   - `fetch chunk 2 from cache abc-123-def`
+   - `get next chunk from cacheId abc-123-def chunkNumber 2`
+
 ### Tools (for the AI)
 
 These tools are designed to be used by the AI assistant.
 
-- **`ask-gemini`**: Asks Google Gemini for its perspective. Can be used for general questions or complex analysis of files.
-  - **`prompt`** (required): The analysis request. Use the `@` syntax to include file or directory references (e.g., `@src/main.js explain this code`) or ask general questions (e.g., `Please use a web search to find the latest news stories`).
+- **`ask`** (short for `ask-gemini`): Asks Google Gemini for its perspective. Can be used for general questions or complex analysis of files.
+  - **`prompt`** (required): The analysis request. Use filepath syntax `[filepath: /path/to/file]` to include file or directory references, or ask general questions.
   - **`model`** (optional): The Gemini model to use. Defaults to `gemini-2.5-pro`.
   - **`sandbox`** (optional): Set to `true` to run in sandbox mode for safe code execution.
-- **`sandbox-test`**: Safely executes code or commands in Gemini's sandbox environment. Always runs in sandbox mode.
-  - **`prompt`** (required): Code testing request (e.g., `Create and run a Python script that...` or `@script.py Run this safely`).
-  - **`model`** (optional): The Gemini model to use.
-- **`Ping`**: A simple test tool that echoes back a message.
+  - **`changeMode`** (optional): Enables structured editing response format (defaults to `true`).
+  - **Response Chunking**: Automatically chunks large responses (>16k tokens) for easier handling.
+
+- **`fetch-chunk`**: Retrieves cached chunks from large Gemini responses.
+  - **`cacheId`** (required): The cache ID returned from a chunked `ask-gemini` response.
+  - **`chunkNumber`** (required): The chunk number to retrieve (1-based indexing).
+  - Used to continue reading large Gemini analyses that were automatically chunked.
+
+- **`ping`**: A simple test tool that echoes back a message.
 - **`Help`**: Shows the Gemini CLI help text.
 
 ### Slash Commands (for the User)

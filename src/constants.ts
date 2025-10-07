@@ -79,15 +79,19 @@ export const CLI = {
   },
 } as const;
 
+// Chunking Constants
+export const CHUNKING = {
+  // Token threshold for automatic chunking
+  TOKEN_THRESHOLD: 16000,
+  // Maximum tokens per chunk
+  MAX_TOKENS_PER_CHUNK: 8000,
+} as const;
 
 // (merged PromptArguments and ToolArguments)
 export interface ToolArguments {
   prompt?: string;
   model?: string;
   sandbox?: boolean | string;
-  changeMode?: boolean | string;
-  chunkIndex?: number | string; // Which chunk to return (1-based)
-  chunkCacheKey?: string; // Optional cache key for continuation
   message?: string; // For Ping tool -- Un-used.
   
   // --> new tool

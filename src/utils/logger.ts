@@ -26,8 +26,8 @@ export class Logger {
     this.warn("Raw:", JSON.stringify(args, null, 2));
   }
 
-  static toolParsedArgs(prompt: string, model?: string, sandbox?: boolean, changeMode?: boolean): void {
-    this.warn(`Parsed prompt: "${prompt}"\nchangeMode: ${changeMode || false}`);
+  static toolParsedArgs(prompt: string, model?: string, sandbox?: boolean): void {
+    this.warn(`Parsed prompt: "${prompt}"`);
   }
 
   static commandExecution(command: string, args: string[], startTime: number): void {

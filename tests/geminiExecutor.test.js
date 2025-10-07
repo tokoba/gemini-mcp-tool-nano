@@ -32,8 +32,4 @@ describe('executeGeminiCLI integration tests', async () => {
     assert.ok(result.length > 0);
   });
 
-  it('handles changeMode flag', async () => {
-    const result = await executeGeminiCLI('test prompt', undefined, undefined, true);
-    assert.ok(typeof result === 'string');
-  });
 });

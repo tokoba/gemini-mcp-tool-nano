@@ -1,98 +1,71 @@
 import { z } from "zod";
-import {
-  formatChangeModeResponse,
-  summarizeChangeModeEdits,
-} from "../utils/changeModeTranslator.js";
-import { getChunks } from "../utils/chunkCache.js";
-import { Logger } from "../utils/logger.js";
+import { getChunk } from "../utils/chunkCache.js";
 import { UnifiedTool } from "./registry.js";
 
-const inputSchema = z.object({
-  cacheKey: z
+const fetchChunkArgsSchema = z.object({
+  cacheId: z
     .string()
-    .describe("The cache key provided in the initial changeMode response"),
-  chunkIndex: z
-    .number()
     .min(1)
-    .describe("Which chunk to retrieve (1-based index)"),
+    .describe(
+      "Cache ID returned by ask-gemini tool when response was chunked. This is a UUID that identifies the cached response chunks."
+    ),
+  chunkNumber: z
+    .number()
+    .int()
+    .min(1)
+    .describe(
+      "Chunk number to retrieve (1-based index). Use the totalChunks value from ask-gemini response to know the valid range."
+    ),
 });
 
 export const fetchChunkTool: UnifiedTool = {
   name: "fetch-chunk",
   description:
-    "Retrieves cached chunks from a changeMode response. Use this to get subsequent chunks after receiving a partial changeMode response.",
-
-  zodSchema: inputSchema,
-
+    "Retrieve a specific chunk from a cached response using the cache ID and chunk number provided by ask-gemini tool",
+  zodSchema: fetchChunkArgsSchema,
   prompt: {
-    description: "Fetch the next chunk of a response",
-    arguments: [
-      {
-        name: "prompt",
-        description: "fetch-chunk cacheKey=<key> chunkIndex=<number>",
-        required: true,
-      },
-    ],
+    description:
+      "Fetch a specific chunk of a large response that was previously chunked by the ask-gemini tool.",
   },
+  category: "gemini",
+  execute: async (args, onProgress) => {
+    const { cacheId, chunkNumber } = args;
 
-  category: "utility",
+    onProgress?.(`Retrieving chunk ${chunkNumber} from cache ${cacheId}...`);
 
-  execute: async (
-    args: any,
-    onProgress?: (newOutput: string) => void
-  ): Promise<string> => {
-    const { cacheKey, chunkIndex } = args;
+    try {
+      // Retrieve the chunk from cache
+      const chunkContent = await getChunk(cacheId as string, chunkNumber as number);
 
-    Logger.toolInvocation("fetch-chunk", args);
-    Logger.debug(`Fetching chunk ${chunkIndex} with cache key: ${cacheKey}`);
+      if (chunkContent === null) {
+        // Cache miss or invalid parameters
+        const errorResponse = {
+          error: "Invalid cacheId or chunkNumber out of bounds",
+          cacheId: cacheId as string,
+          requestedChunk: chunkNumber as number,
+        };
+        return `❌ Chunk retrieval failed:\n${JSON.stringify(errorResponse, null, 2)}\n\nPlease verify that:\n1. The cacheId is correct (from ask-gemini response)\n2. The chunkNumber is within the valid range (1 to totalChunks)\n3. The cache has not expired (24-hour TTL)`;
+      }
 
-    // Normalize potential quoted values coming from UI/tooling
-    const normalizedKey = String(cacheKey).trim().replace(/^['"]|['"]$/g, "");
+      // Successful retrieval - return in the same format as ask-gemini chunked responses
+      // Note: We don't have totalChunks info here, so we'll return a simplified format
+      const response = {
+        isChunked: true,
+        cacheId: cacheId as string,
+        chunkNumber: chunkNumber as number,
+        content: chunkContent,
+      };
 
-    // Retrieve cached chunks
-    const chunks = getChunks(normalizedKey);
+      return `📄 Chunk ${chunkNumber} retrieved successfully:\n${JSON.stringify(response, null, 2)}`;
 
-    if (!chunks) {
-      return `❌ Cache miss: No chunks found for cache key "${normalizedKey}". 
-
-  Possible reasons:
-  1. The cache key is incorrect, Have you ran ask with changeMode enabled?
-  2. The cache has expired (10 minute TTL)
-  3. The MCP server was restarted and the file-based cache was cleared
-
-Please re-run the original changeMode request to regenerate the chunks.`;
+    } catch (error) {
+      const errorMessage = error instanceof Error ? error.message : String(error);
+      const errorResponse = {
+        error: `Failed to retrieve chunk: ${errorMessage}`,
+        cacheId: cacheId as string,
+        requestedChunk: chunkNumber as number,
+      };
+      return `❌ Chunk retrieval error:\n${JSON.stringify(errorResponse, null, 2)}`;
     }
-
-    // Validate chunk index
-    if (chunkIndex < 1 || chunkIndex > chunks.length) {
-      return `❌ Invalid chunk index: ${chunkIndex}
-
-Available chunks: 1 to ${chunks.length}
-You requested: ${chunkIndex}
-
-Please use a valid chunk index.`;
-    }
-
-    // Get the requested chunk
-    const chunk = chunks[chunkIndex - 1];
-
-    // Format the response
-    let result = formatChangeModeResponse(chunk.edits, {
-      current: chunkIndex,
-      total: chunks.length,
-      cacheKey: normalizedKey,
-    });
-
-    // Add summary for first chunk
-    if (chunkIndex === 1 && chunks.length > 1) {
-      const allEdits = chunks.flatMap(c => c.edits);
-      result = summarizeChangeModeEdits(allEdits, true) + "\n\n" + result;
-    }
-
-    Logger.debug(
-      `Returning chunk ${chunkIndex} of ${chunks.length} with ${chunk.edits.length} edits`
-    );
-
-    return result;
   },
 };
