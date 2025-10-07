@@ -385,6 +385,8 @@ export async function saveChunks(
       throw error;
     }
   }
+  // 全ての試行が失敗した場合
+  throw new Error('Failed to save chunks after retries');
 }
 
 /**
