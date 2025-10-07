@@ -30,6 +30,7 @@ interface ProgressParams {
   progress: number;
   total?: number;
   message?: string;
+  [key: string]: unknown;
 }
 
 import {

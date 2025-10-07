@@ -99,7 +99,7 @@ export function getPromptMessage(toolName: string, args: Record<string, unknown>
   }
   const paramStrings: string[] = [];
   
-  if (args.prompt) {
+  if (args.prompt && typeof args.prompt === 'string') {
     paramStrings.push(args.prompt);
   }
 

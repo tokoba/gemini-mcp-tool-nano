@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for src/utils/filepath/atSyntaxProcessor.ts</title>
+    <title>Code coverage report for src/utils/errorClassification.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../../prettify.css" />
-    <link rel="stylesheet" href="../../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../../favicon.png" />
+    <link rel="stylesheet" href="../../prettify.css" />
+    <link rel="stylesheet" href="../../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../../sort-arrow-sprite.png);
+            background-image: url(../../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../index.html">All files</a> / <a href="index.html">src/utils/filepath</a> atSyntaxProcessor.ts</h1>
+        <h1><a href="../../index.html">All files</a> / <a href="index.html">src/utils</a> errorClassification.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.03% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>94/108</span>
+                <span class='fraction'>107/107</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.58% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>45/58</span>
+                <span class='fraction'>41/41</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.88% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>16/18</span>
+                <span class='fraction'>35/35</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.4% </span>
+                <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>89/103</span>
+                <span class='fraction'>99/99</span>
             </div>
         
             
@@ -488,163 +488,183 @@
 <a name='L423'></a><a href='#L423'>423</a>
 <a name='L424'></a><a href='#L424'>424</a>
 <a name='L425'></a><a href='#L425'>425</a>
-<a name='L426'></a><a href='#L426'>426</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L426'></a><a href='#L426'>426</a>
+<a name='L427'></a><a href='#L427'>427</a>
+<a name='L428'></a><a href='#L428'>428</a>
+<a name='L429'></a><a href='#L429'>429</a>
+<a name='L430'></a><a href='#L430'>430</a>
+<a name='L431'></a><a href='#L431'>431</a>
+<a name='L432'></a><a href='#L432'>432</a>
+<a name='L433'></a><a href='#L433'>433</a>
+<a name='L434'></a><a href='#L434'>434</a>
+<a name='L435'></a><a href='#L435'>435</a>
+<a name='L436'></a><a href='#L436'>436</a>
+<a name='L437'></a><a href='#L437'>437</a>
+<a name='L438'></a><a href='#L438'>438</a>
+<a name='L439'></a><a href='#L439'>439</a>
+<a name='L440'></a><a href='#L440'>440</a>
+<a name='L441'></a><a href='#L441'>441</a>
+<a name='L442'></a><a href='#L442'>442</a>
+<a name='L443'></a><a href='#L443'>443</a>
+<a name='L444'></a><a href='#L444'>444</a>
+<a name='L445'></a><a href='#L445'>445</a>
+<a name='L446'></a><a href='#L446'>446</a>
+<a name='L447'></a><a href='#L447'>447</a>
+<a name='L448'></a><a href='#L448'>448</a>
+<a name='L449'></a><a href='#L449'>449</a>
+<a name='L450'></a><a href='#L450'>450</a>
+<a name='L451'></a><a href='#L451'>451</a>
+<a name='L452'></a><a href='#L452'>452</a>
+<a name='L453'></a><a href='#L453'>453</a>
+<a name='L454'></a><a href='#L454'>454</a>
+<a name='L455'></a><a href='#L455'>455</a>
+<a name='L456'></a><a href='#L456'>456</a>
+<a name='L457'></a><a href='#L457'>457</a>
+<a name='L458'></a><a href='#L458'>458</a>
+<a name='L459'></a><a href='#L459'>459</a>
+<a name='L460'></a><a href='#L460'>460</a>
+<a name='L461'></a><a href='#L461'>461</a>
+<a name='L462'></a><a href='#L462'>462</a>
+<a name='L463'></a><a href='#L463'>463</a>
+<a name='L464'></a><a href='#L464'>464</a>
+<a name='L465'></a><a href='#L465'>465</a>
+<a name='L466'></a><a href='#L466'>466</a>
+<a name='L467'></a><a href='#L467'>467</a>
+<a name='L468'></a><a href='#L468'>468</a>
+<a name='L469'></a><a href='#L469'>469</a>
+<a name='L470'></a><a href='#L470'>470</a>
+<a name='L471'></a><a href='#L471'>471</a>
+<a name='L472'></a><a href='#L472'>472</a>
+<a name='L473'></a><a href='#L473'>473</a>
+<a name='L474'></a><a href='#L474'>474</a>
+<a name='L475'></a><a href='#L475'>475</a>
+<a name='L476'></a><a href='#L476'>476</a>
+<a name='L477'></a><a href='#L477'>477</a>
+<a name='L478'></a><a href='#L478'>478</a>
+<a name='L479'></a><a href='#L479'>479</a>
+<a name='L480'></a><a href='#L480'>480</a>
+<a name='L481'></a><a href='#L481'>481</a>
+<a name='L482'></a><a href='#L482'>482</a>
+<a name='L483'></a><a href='#L483'>483</a>
+<a name='L484'></a><a href='#L484'>484</a>
+<a name='L485'></a><a href='#L485'>485</a>
+<a name='L486'></a><a href='#L486'>486</a>
+<a name='L487'></a><a href='#L487'>487</a>
+<a name='L488'></a><a href='#L488'>488</a>
+<a name='L489'></a><a href='#L489'>489</a>
+<a name='L490'></a><a href='#L490'>490</a>
+<a name='L491'></a><a href='#L491'>491</a>
+<a name='L492'></a><a href='#L492'>492</a>
+<a name='L493'></a><a href='#L493'>493</a>
+<a name='L494'></a><a href='#L494'>494</a>
+<a name='L495'></a><a href='#L495'>495</a>
+<a name='L496'></a><a href='#L496'>496</a>
+<a name='L497'></a><a href='#L497'>497</a>
+<a name='L498'></a><a href='#L498'>498</a>
+<a name='L499'></a><a href='#L499'>499</a>
+<a name='L500'></a><a href='#L500'>500</a>
+<a name='L501'></a><a href='#L501'>501</a>
+<a name='L502'></a><a href='#L502'>502</a>
+<a name='L503'></a><a href='#L503'>503</a>
+<a name='L504'></a><a href='#L504'>504</a>
+<a name='L505'></a><a href='#L505'>505</a>
+<a name='L506'></a><a href='#L506'>506</a>
+<a name='L507'></a><a href='#L507'>507</a>
+<a name='L508'></a><a href='#L508'>508</a>
+<a name='L509'></a><a href='#L509'>509</a>
+<a name='L510'></a><a href='#L510'>510</a>
+<a name='L511'></a><a href='#L511'>511</a>
+<a name='L512'></a><a href='#L512'>512</a>
+<a name='L513'></a><a href='#L513'>513</a>
+<a name='L514'></a><a href='#L514'>514</a>
+<a name='L515'></a><a href='#L515'>515</a>
+<a name='L516'></a><a href='#L516'>516</a>
+<a name='L517'></a><a href='#L517'>517</a>
+<a name='L518'></a><a href='#L518'>518</a>
+<a name='L519'></a><a href='#L519'>519</a>
+<a name='L520'></a><a href='#L520'>520</a>
+<a name='L521'></a><a href='#L521'>521</a>
+<a name='L522'></a><a href='#L522'>522</a>
+<a name='L523'></a><a href='#L523'>523</a>
+<a name='L524'></a><a href='#L524'>524</a>
+<a name='L525'></a><a href='#L525'>525</a>
+<a name='L526'></a><a href='#L526'>526</a>
+<a name='L527'></a><a href='#L527'>527</a>
+<a name='L528'></a><a href='#L528'>528</a>
+<a name='L529'></a><a href='#L529'>529</a>
+<a name='L530'></a><a href='#L530'>530</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">49x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">49x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">49x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">49x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">49x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">49x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">51x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">51x</span>
-<span class="cline-any cline-yes">2077x</span>
-<span class="cline-any cline-yes">2077x</span>
-<span class="cline-any cline-yes">2077x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2077x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2077x</span>
-<span class="cline-any cline-yes">2045x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">51x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -659,202 +679,148 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-yes">2070x</span>
-<span class="cline-any cline-yes">2070x</span>
-<span class="cline-any cline-yes">2070x</span>
-<span class="cline-any cline-yes">2070x</span>
-<span class="cline-any cline-yes">2039x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">36x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">47x</span>
-<span class="cline-any cline-yes">2075x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1001114x</span>
-<span class="cline-any cline-yes">2075x</span>
-<span class="cline-any cline-yes">2067x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2010x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-yes">2047x</span>
-<span class="cline-any cline-yes">2047x</span>
-<span class="cline-any cline-yes">2047x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2047x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">48x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2070x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2070x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">28x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">46x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">113x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">76x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">36x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">197x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">114x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">18x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2040x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2038x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2037x</span>
-<span class="cline-any cline-yes">2037x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">28x</span>
-<span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-yes">28x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">129x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -864,26 +830,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -898,446 +852,804 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-yes">27x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">16x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/**
- * 警告: このコードは個人用ローカルPC環境専用です
- * セキュリティ対応は一切行われていません
- * 本番環境や信頼できない入力には使用しないでください
- */
-&nbsp;
-import { PathDetector, PathDetectionResult, createDefaultPathDetector, createLightweightPathDetector } from './pathDetector.js';
-import { PathValidator, SecurityConfig, ValidationResult, DEFAULT_SECURITY_CONFIG } from './pathValidator.js';
-import { Logger } from '../logger.js';
-&nbsp;
-/**
- * @シンタックス処理設定
- */
-export interface AtSyntaxConfig {
-  preserveValidPaths: boolean;     // 有効なパスは@を保持
-  addSpaceAfterInvalid: boolean;   // 無効な@の後にスペースを追加
-  escapeInvalidPaths: boolean;     // 無効なパスをエスケープ
-  enableFileExpansion: boolean;    // ファイル内容展開機能
-  enableLightweightMode: boolean;  // 軽量モード（EXPLICIT_PATTERNSのみ）
-}
-&nbsp;
-/**
- * パス修正情報
- */
-export interface PathModification {
-  original: string;
-  modified: string;
-  action: 'preserved' | 'spaced' | 'escaped' | 'expanded';
-  reason: string;
-  startIndex: number;
-  endIndex: number;
-}
-&nbsp;
-/**
- * @シンタックス処理結果
- */
-export interface AtSyntaxProcessingResult {
-  processedContent: string;
-  detectedPaths: PathDetectionResult[];
-  modifications: PathModification[];
-  validationResults: ValidationResult[];
-  expandedContent?: string;
-}
-&nbsp;
-/**
- * 智的@シンタックスプロセッサ
+ * 構造化エラー分類システム
  * 
- * 処理フロー:
- * 1. @記号の検出と分類
- * 2. ファイルパスの抽出と検証
- * 3. 有効/無効パスの適切な処理
- * 4. オプション: ファイル内容の展開
+ * 全モジュール間での一貫したエラー処理パターンを提供します。
+ * エラーの分類、重要度、対処法を標準化します。
  */
-export class AtSyntaxProcessor {
-  private readonly pathDetector: PathDetector;
-  private pathValidator: PathValidator;
-  private readonly config: AtSyntaxConfig;
-  private securityConfig: SecurityConfig;
 &nbsp;
-  constructor(
-    config: Partial&lt;AtSyntaxConfig&gt; = <span class="branch-0 cbranch-no" title="branch not covered" >{},</span>
-    securityConfig: SecurityConfig = DEFAULT_SECURITY_CONFIG
-  ) {
-    this.config = {
-      preserveValidPaths: true,
-      addSpaceAfterInvalid: true,
-      escapeInvalidPaths: false,
-      enableFileExpansion: false,
-      enableLightweightMode: false,
-      ...config
-    };
+import { Logger } from './logger.js';
+&nbsp;
+/**
+ * エラー分類カテゴリ
+ */
+export enum ErrorCategory {
+  /** ユーザー入力の検証エラー */
+  VALIDATION = 'validation',
+  /** 外部コマンド実行エラー */
+  COMMAND_EXECUTION = 'command_execution', 
+  /** ファイルシステム操作エラー */
+  FILE_SYSTEM = 'file_system',
+  /** ネットワーク・API通信エラー */
+  NETWORK = 'network',
+  /** キャッシュ操作エラー */
+  CACHE = 'cache',
+  /** 設定・構成エラー */
+  CONFIGURATION = 'configuration',
+  /** システム内部エラー */
+  INTERNAL = 'internal',
+  /** MCP プロトコルエラー */
+  PROTOCOL = 'protocol',
+  /** クォータ・レート制限エラー */
+  QUOTA = 'quota',
+  /** タイムアウトエラー */
+  TIMEOUT = 'timeout'
+}
+&nbsp;
+/**
+ * エラー重要度レベル
+ */
+export enum ErrorSeverity {
+  /** 情報 - 処理は継続可能 */
+  INFO = 'info',
+  /** 警告 - 処理は継続可能だが注意が必要 */
+  WARNING = 'warning',
+  /** エラー - 処理は失敗するが回復可能 */
+  ERROR = 'error',
+  /** 致命的エラー - 処理は失敗し回復不可能 */
+  CRITICAL = 'critical'
+}
+&nbsp;
+/**
+ * エラー復旧戦略
+ */
+export enum RecoveryStrategy {
+  /** 再試行可能 */
+  RETRY = 'retry',
+  /** フォールバック処理可能 */
+  FALLBACK = 'fallback',
+  /** ユーザー対処が必要 */
+  USER_ACTION = 'user_action',
+  /** 復旧不可能 */
+  NONE = 'none'
+}
+&nbsp;
+/**
+ * 分類済みエラーの詳細情報
+ */
+export interface ClassifiedError {
+  /** エラーカテゴリ */
+  category: ErrorCategory;
+  /** 重要度レベル */
+  severity: ErrorSeverity;
+  /** 復旧戦略 */
+  recovery: RecoveryStrategy;
+  /** エラーコード */
+  code: string;
+  /** ユーザー向けメッセージ */
+  userMessage: string;
+  /** 開発者向け詳細メッセージ */
+  devMessage: string;
+  /** 元のエラー */
+  originalError?: Error;
+  /** コンテキスト情報 */
+  context?: Record&lt;string, unknown&gt;;
+  /** 対処法の提案 */
+  suggestions?: string[];
+}
+&nbsp;
+/**
+ * エラー分類器クラス
+ */
+export class ErrorClassifier {
+  /**
+   * エラーメッセージからエラーを分類する
+   * @param error エラーオブジェクトまたはメッセージ
+   * @param context 追加のコンテキスト情報
+   * @returns 分類済みエラー情報
+   */
+  static classify(error: Error | string, context?: Record&lt;string, unknown&gt;): ClassifiedError {
+    const errorMessage = error instanceof Error ? error.message : error;
+    const originalError = error instanceof Error ? error : undefined;
+&nbsp;
+    // エラーメッセージパターンマッチング（具体的なエラーから先にチェック）
+    if (this.isCacheError(errorMessage)) {
+      return this.createCacheError(errorMessage, originalError, context);
+    }
     
-    this.securityConfig = securityConfig;
+    if (this.isQuotaError(errorMessage)) {
+      return this.createQuotaError(errorMessage, originalError, context);
+    }
     
-    // パス検出器の初期化
-    this.pathDetector = this.config.enableLightweightMode 
-      ? createLightweightPathDetector()
-      : createDefaultPathDetector();
+    if (this.isProtocolError(errorMessage)) {
+      return this.createProtocolError(errorMessage, originalError, context);
+    }
     
-    // パスバリデーターの初期化  
-    this.pathValidator = new PathValidator(this.securityConfig);
+    if (this.isCommandExecutionError(errorMessage)) {
+      return this.createCommandExecutionError(errorMessage, originalError, context);
+    }
+    
+    if (this.isTimeoutError(errorMessage)) {
+      return this.createTimeoutError(errorMessage, originalError, context);
+    }
+    
+    if (this.isFileSystemError(errorMessage)) {
+      return this.createFileSystemError(errorMessage, originalError, context);
+    }
+    
+    if (this.isNetworkError(errorMessage)) {
+      return this.createNetworkError(errorMessage, originalError, context);
+    }
+    
+    if (this.isValidationError(errorMessage)) {
+      return this.createValidationError(errorMessage, originalError, context);
+    }
+&nbsp;
+    // デフォルト: 内部エラーとして分類
+    return this.createInternalError(errorMessage, originalError, context);
   }
 &nbsp;
-  /**
-   * @記号を含むコンテンツを処理
-   * @param content 処理対象のコンテンツ
-   * @returns 処理結果
-   */
-  async process(content: string): Promise&lt;AtSyntaxProcessingResult&gt; {
-    Logger.debug('AtSyntaxProcessor: Starting @ syntax processing');
-    
-    if (typeof content !== 'string') {
-      throw new Error('Content must be a string');
-    }
+  // パターンマッチング用のヘルパーメソッド群
 &nbsp;
-    // 1. パス検出
-    const detectedPaths = this.pathDetector.detectFilePaths(content);
-    Logger.debug(`AtSyntaxProcessor: Detected ${detectedPaths.length} potential paths`);
+  private static isValidationError(message: string): boolean {
+    const patterns = [
+      /invalid\s+arguments/i,
+      /must be greater than/i,
+      /must be a string/i,
+      /chunk index must be/i,
+      /please provide/i,
+      /invalid path detected/i,
+      /content must be/i,
+      /invalid.*format/i  // 順序を最後に移動（cache errorとの競合を避ける）
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
 &nbsp;
-    // 2. パス検証
-    const validationResults = await this.validateDetectedPaths(detectedPaths);
-    
-    // 3. コンテンツ修正
-    const { processedContent, modifications } = await this.processContent(
-      content, 
-      detectedPaths, 
-      validationResults
-    );
+  private static isCommandExecutionError(message: string): boolean {
+    const patterns = [
+      /failed to spawn command/i,
+      /command failed with exit code/i,
+      /command.*not found/i,
+      /command execution failed/i,  // より具体的に
+      /execution.*failed/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
 &nbsp;
-    // 4. オプション: ファイル内容展開
-    let expandedContent: string | undefined;
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.config.enableFileExpansion) {
-<span class="cstat-no" title="statement not covered" >      expandedContent = await this.expandFileContent(processedContent, validationResults);</span>
-    }
+  private static isFileSystemError(message: string): boolean {
+    const patterns = [
+      /ENOENT/i,
+      /EACCES/i,
+      /EISDIR/i,
+      /failed to read/i,
+      /failed to write/i,
+      /file.*not found/i,
+      /directory.*not exist/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
 &nbsp;
-    Logger.debug(`AtSyntaxProcessor: Processing complete. ${modifications.length} modifications made`);
+  private static isNetworkError(message: string): boolean {
+    const patterns = [
+      /ECONNREFUSED/i,
+      /ETIMEDOUT/i,
+      /network/i,
+      /connection.*failed/i,
+      /request.*failed/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
 &nbsp;
+  private static isCacheError(message: string): boolean {
+    const patterns = [
+      /cache.*expired/i,
+      /cache.*not found/i,
+      /invalid cache key/i,
+      /failed to save chunks/i,
+      /failed to read metadata/i,
+      /cannot save empty chunks/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
+&nbsp;
+  private static isQuotaError(message: string): boolean {
+    const patterns = [
+      /quota exceeded/i,
+      /rate limit/i,
+      /too many requests/i,
+      /daily limit/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
+&nbsp;
+  private static isTimeoutError(message: string): boolean {
+    const patterns = [
+      /timeout/i,
+      /timed out/i,
+      /deadline exceeded/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
+&nbsp;
+  private static isProtocolError(message: string): boolean {
+    const patterns = [
+      /unknown tool/i,
+      /unknown prompt/i,
+      /not found in registry/i,
+      /no prompt defined/i,
+      /protocol.*error/i
+    ];
+    return patterns.some(pattern =&gt; pattern.test(message));
+  }
+&nbsp;
+  // 各エラーカテゴリーのClassifiedError作成メソッド群
+&nbsp;
+  private static createValidationError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
     return {
-      processedContent,
-      detectedPaths,
-      modifications,
-      validationResults,
-      expandedContent
+      category: ErrorCategory.VALIDATION,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.USER_ACTION,
+      code: 'VALIDATION_001',
+      userMessage: '入力データに問題があります。入力内容を確認してください。',
+      devMessage: `Validation failed: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        '入力パラメータの型と形式を確認してください',
+        'API仕様書を参照して正しい値を入力してください'
+      ]
     };
   }
 &nbsp;
-  /**
-   * 検出されたパスを検証
-   * @param detectedPaths 検出されたパス
-   * @returns 検証結果
-   */
-  private async validateDetectedPaths(detectedPaths: PathDetectionResult[]): Promise&lt;ValidationResult[]&gt; {
-    const validationResults: ValidationResult[] = [];
-&nbsp;
-    for (const detectedPath of detectedPaths) {
-      try {
-        const validation = await this.pathValidator.validatePath(detectedPath.filepath);
-        validationResults.push(validation);
-        
-        Logger.debug(`AtSyntaxProcessor: Validated path "${detectedPath.filepath}" - ${validation.valid ? 'VALID' : 'INVALID'}`);
-        
-        if (!validation.valid) {
-          Logger.debug(`AtSyntaxProcessor: Validation errors: ${validation.errors.join(', ')}`);
-        }
-      } catch (error) {
-        const errorMessage = <span class="cstat-no" title="statement not covered" >error instanceof Error ? error.message : String(error);</span>
-<span class="cstat-no" title="statement not covered" >        validationResults.push({</span>
-          valid: false,
-          isSafeToRead: false,
-          errors: [`Validation failed: ${errorMessage}`]
-        });
-        
-<span class="cstat-no" title="statement not covered" >        Logger.debug(`AtSyntaxProcessor: Validation exception for "${detectedPath.filepath}": ${errorMessage}`);</span>
-      }
-    }
-&nbsp;
-    return validationResults;
-  }
-&nbsp;
-  /**
-   * コンテンツを処理して@記号を適切に変更
-   * @param content 元のコンテンツ
-   * @param detectedPaths 検出されたパス
-   * @param validationResults 検証結果
-   * @returns 処理されたコンテンツと修正情報
-   */
-  private async processContent(
-    content: string,
-    detectedPaths: PathDetectionResult[],
-    validationResults: ValidationResult[]
-  ): Promise&lt;{ processedContent: string; modifications: PathModification[] }&gt; {
-    let processedContent = content;
-    const modifications: PathModification[] = [];
-&nbsp;
-    // 1. 全ての修正候補を収集
-    const allModifications: {
-      startIndex: number;
-      endIndex: number;
-      modification: Omit&lt;PathModification, 'startIndex' | 'endIndex'&gt;;
-    }[] = [];
-&nbsp;
-    // 1a. 検出されたパスからの修正
-    for (let i = 0; i &lt; detectedPaths.length; i++) {
-      const detectedPath = detectedPaths[i];
-      const validation = validationResults[i];
-      const mod = this.createModification(detectedPath, validation);
-      if (mod) {
-        allModifications.push({
-          startIndex: detectedPath.startIndex,
-          endIndex: detectedPath.endIndex,
-          modification: mod,
-        });
-      }
-    }
-&nbsp;
-    // 1b. 検出されなかった@記号からの修正
-    if (this.config.addSpaceAfterInvalid) {
-      const regex = /@/g;
-      let match;
-      while ((match = regex.exec(content)) !== null) {
-        const index = match.index;
-        
-        // 既に処理済みのパスに含まれているかチェック
-        const isProcessed = detectedPaths.some(path =&gt; index &gt;= path.startIndex &amp;&amp; index &lt; path.endIndex);
-        if (isProcessed) {
-          continue;
-        }
-&nbsp;
-        // 既にスペースが後ろにある場合は処理しない
-        <span class="missing-if-branch" title="if path not taken" >I</span>if (index &lt; content.length - 1 &amp;&amp; /\s/.test(content[index + 1])) {
-<span class="cstat-no" title="statement not covered" >          continue;</span>
-        }
-&nbsp;
-        allModifications.push({
-          startIndex: index,
-          endIndex: index + 1,
-          modification: {
-            original: '@',
-            modified: '@ ',
-            action: 'spaced',
-            reason: 'Non-filepath @ symbol',
-          },
-        });
-      }
-    }
-&nbsp;
-    // 2. 修正を位置でソートして適用
-    allModifications.sort((a, b) =&gt; b.startIndex - a.startIndex);
-&nbsp;
-    for (const { startIndex, endIndex, modification } of allModifications) {
-      const before = processedContent.substring(0, startIndex);
-      const after = processedContent.substring(endIndex);
-      processedContent = before + modification.modified + after;
-      
-      modifications.unshift({
-        ...modification,
-        startIndex,
-        endIndex,
-      });
-    }
-&nbsp;
-    return { processedContent, modifications };
-  }
-&nbsp;
-  /**
-   * パス検出結果と検証結果から修正情報を作成
-   * @param detectedPath 検出されたパス
-   * @param validation 検証結果
-   * @returns 修正情報
-   */
-  private createModification(
-    detectedPath: PathDetectionResult,
-    validation: ValidationResult
-  ): Omit&lt;PathModification, 'startIndex' | 'endIndex'&gt; | null {
-    const original = detectedPath.match;
-    
-    // 1. 有効なパスの処理 - ユーザー仕様「存在するファイルの場合はスペース不要」
-    if (validation.valid) {
-      // 1a. 安全なパス
-      <span class="missing-if-branch" title="else path not taken" >E</span>if (validation.isSafeToRead) {
-        if (this.config.preserveValidPaths) {
-          return null; // 修正なし
-        }
-        return {
-          original,
-          modified: original,
-          action: 'preserved',
-          reason: 'Valid and safe path preserved'
-        };
-      }
-      
-      // 1b. 安全でないパス
-      // ユーザー仕様: 存在するファイルはスペース挿入の対象外
-      // エスケープ設定がある場合のみエスケープ、それ以外は保持
-<span class="cstat-no" title="statement not covered" >      if (this.config.escapeInvalidPaths) {</span>
-<span class="cstat-no" title="statement not covered" >        return {</span>
-          original,
-          modified: `\\${original}`,
-          action: 'escaped',
-          reason: 'Valid but unsafe path escaped'
-        };
-      }
-      // 存在するファイルはスペース追加しない（修正なし）
-<span class="cstat-no" title="statement not covered" >      return null;</span>
-    }
-&nbsp;
-    // 2. 無効なパスの処理 (validation.valid === false の場合)
-    if (detectedPath.type === 'explicit' &amp;&amp; original.startsWith('@')) {
-      // @マーカー付きの無効パス
-      if (this.config.escapeInvalidPaths) {
-        return {
-          original,
-          modified: `\\${original}`,
-          action: 'escaped',
-          reason: 'Invalid path escaped'
-        };
-      } else <span class="missing-if-branch" title="else path not taken" >E</span>if (this.config.addSpaceAfterInvalid) {
-        return {
-          original,
-          modified: original.replace('@', '@ '),
-          action: 'spaced',
-          reason: 'Invalid path'
-        };
-      }
-    }
-&nbsp;
-    // その他の無効パス（一般形式、ファイル名形式）
-    <span class="missing-if-branch" title="if path not taken" >I</span>if (this.config.addSpaceAfterInvalid &amp;&amp; original.includes('@')) {
-<span class="cstat-no" title="statement not covered" >      return {</span>
-        original,
-        modified: original.replace('@', '@ '),
-        action: 'spaced',
-        reason: 'Non-filepath @ symbol'
-      };
-    }
-&nbsp;
-    // 修正不要
-    return null;
-  }
-&nbsp;
-  /**
-   * ファイル内容を展開（オプション機能）
-   * @param processedContent 処理済みコンテンツ
-   * @param validationResults 検証結果
-   * @returns 展開されたコンテンツ
-   */
-  private <span class="fstat-no" title="function not covered" >async </span>expandFileContent(
-    processedContent: string,
-    validationResults: ValidationResult[]
-  ): Promise&lt;string&gt; {
-<span class="cstat-no" title="statement not covered" >    if (!this.config.enableFileExpansion) {</span>
-<span class="cstat-no" title="statement not covered" >      return processedContent;</span>
-    }
-&nbsp;
-    // 実装は簡易版（参考実装のPathProcessorを利用することを想定）
-<span class="cstat-no" title="statement not covered" >    Logger.debug('AtSyntaxProcessor: File expansion not implemented in this version');</span>
-<span class="cstat-no" title="statement not covered" >    return processedContent;</span>
-  }
-&nbsp;
-  /**
-   * 処理設定を更新
-   * @param newConfig 新しい設定
-   * @param newSecurityConfig 新しいセキュリティ設定（オプション）
-   */
-  updateConfig(newConfig: Partial&lt;AtSyntaxConfig&gt;, newSecurityConfig?: SecurityConfig): void {
-    Object.assign(this.config, newConfig);
-    
-    // セキュリティ設定が提供された場合、PathValidatorを再初期化
-    if (newSecurityConfig) {
-      this.securityConfig = newSecurityConfig;
-      this.pathValidator = new PathValidator(this.securityConfig);
-      Logger.debug('AtSyntaxProcessor: PathValidator re-initialized with new security config');
-    }
-    
-    Logger.debug('AtSyntaxProcessor: Configuration updated');
-  }
-&nbsp;
-  /**
-   * 現在の設定を取得
-   * @returns 現在の設定
-   */
-  getConfig(): AtSyntaxConfig {
-    return { ...this.config };
-  }
-&nbsp;
-  /**
-   * 統計情報を取得
-   * @param content 分析対象のコンテンツ
-   * @returns 統計情報
-   */
-  async getStatistics(content: string): Promise&lt;{
-    totalAtSymbols: number;
-    detectedPaths: number;
-    validPaths: number;
-    safePaths: number;
-    byType: Record&lt;string, number&gt;;
-    byPlatform: Record&lt;string, number&gt;;
-  }&gt; {
-    const atSymbolCount = (content.match(/@/g) || <span class="branch-1 cbranch-no" title="branch not covered" >[])</span>.length;
-    const detectedPaths = this.pathDetector.detectFilePaths(content);
-    const validationResults = await this.validateDetectedPaths(detectedPaths);
-    
-    const validPaths = validationResults.filter(v =&gt; v.valid).length;
-    const safePaths = validationResults.filter(v =&gt; v.valid &amp;&amp; v.isSafeToRead).length;
-    
-    const byType = detectedPaths.reduce((acc, p) =&gt; {
-      acc[p.type] = (acc[p.type] || 0) + 1;
-      return acc;
-    }, {} as Record&lt;string, number&gt;);
-    
-    const byPlatform = detectedPaths.reduce((acc, p) =&gt; {
-      acc[p.platform] = (acc[p.platform] || 0) + 1;
-      return acc;
-    }, {} as Record&lt;string, number&gt;);
-&nbsp;
+  private static createCommandExecutionError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
     return {
-      totalAtSymbols: atSymbolCount,
-      detectedPaths: detectedPaths.length,
-      validPaths,
-      safePaths,
-      byType,
-      byPlatform
+      category: ErrorCategory.COMMAND_EXECUTION,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.RETRY,
+      code: 'COMMAND_001',
+      userMessage: 'コマンドの実行に失敗しました。しばらく待ってから再試行してください。',
+      devMessage: `Command execution failed: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'Gemini CLIが正しくインストールされているか確認してください',
+        'ネットワーク接続を確認してください',
+        'しばらく待ってから再試行してください'
+      ]
     };
+  }
+&nbsp;
+  private static createFileSystemError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.FILE_SYSTEM,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.USER_ACTION,
+      code: 'FS_001',
+      userMessage: 'ファイルまたはディレクトリの操作に失敗しました。',
+      devMessage: `File system operation failed: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'ファイルパスが正しいか確認してください',
+        'ファイルの読み書き権限を確認してください',
+        'ディスク容量を確認してください'
+      ]
+    };
+  }
+&nbsp;
+  private static createNetworkError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.NETWORK,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.RETRY,
+      code: 'NETWORK_001',
+      userMessage: 'ネットワーク接続に問題があります。接続を確認して再試行してください。',
+      devMessage: `Network operation failed: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'インターネット接続を確認してください',
+        'プロキシ設定を確認してください',
+        'しばらく待ってから再試行してください'
+      ]
+    };
+  }
+&nbsp;
+  private static createCacheError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.CACHE,
+      severity: ErrorSeverity.WARNING,
+      recovery: RecoveryStrategy.FALLBACK,
+      code: 'CACHE_001',
+      userMessage: 'キャッシュ操作に失敗しました。処理を続行します。',
+      devMessage: `Cache operation failed: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'キャッシュディレクトリの権限を確認してください',
+        'ディスク容量を確認してください',
+        'キャッシュが古い場合は削除してください'
+      ]
+    };
+  }
+&nbsp;
+  private static createQuotaError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.QUOTA,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.FALLBACK,
+      code: 'QUOTA_001',
+      userMessage: 'API使用量が上限に達しました。しばらく待つか、別のモデルを使用してください。',
+      devMessage: `Quota exceeded: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'しばらく待ってから再試行してください',
+        'gemini-2.5-flashモデルを使用してください',
+        '明日以降に再試行してください'
+      ]
+    };
+  }
+&nbsp;
+  private static createTimeoutError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.TIMEOUT,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.RETRY,
+      code: 'TIMEOUT_001',
+      userMessage: '処理がタイムアウトしました。再試行するか、より小さなデータで試してください。',
+      devMessage: `Operation timed out: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        '処理する内容を小さく分割してください',
+        'ネットワーク接続を確認してください',
+        'しばらく待ってから再試行してください'
+      ]
+    };
+  }
+&nbsp;
+  private static createProtocolError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.PROTOCOL,
+      severity: ErrorSeverity.ERROR,
+      recovery: RecoveryStrategy.USER_ACTION,
+      code: 'PROTOCOL_001',
+      userMessage: '指定されたツールまたはコマンドが見つかりません。',
+      devMessage: `Protocol error: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'ツール名のスペルを確認してください',
+        '利用可能なツール一覧を確認してください',
+        'ヘルプコマンドを実行してください'
+      ]
+    };
+  }
+&nbsp;
+  private static createInternalError(
+    message: string, 
+    originalError?: Error, 
+    context?: Record&lt;string, unknown&gt;
+  ): ClassifiedError {
+    return {
+      category: ErrorCategory.INTERNAL,
+      severity: ErrorSeverity.CRITICAL,
+      recovery: RecoveryStrategy.NONE,
+      code: 'INTERNAL_001',
+      userMessage: '内部エラーが発生しました。開発者にお問い合わせください。',
+      devMessage: `Internal error: ${message}`,
+      originalError,
+      context,
+      suggestions: [
+        'エラー内容を開発者に報告してください',
+        'システムを再起動してみてください',
+        '最新版にアップデートしてください'
+      ]
+    };
+  }
+&nbsp;
+  /**
+   * 分類済みエラーをログに記録する
+   * @param classifiedError 分類済みエラー
+   */
+  static logError(classifiedError: ClassifiedError): void {
+    const logMessage = `[${classifiedError.category}:${classifiedError.code}] ${classifiedError.devMessage}`;
+    
+    switch (classifiedError.severity) {
+      case ErrorSeverity.INFO:
+        Logger.log(logMessage, { context: classifiedError.context });
+        break;
+      case ErrorSeverity.WARNING:
+        Logger.warn(logMessage, { context: classifiedError.context });
+        break;
+      case ErrorSeverity.ERROR:
+        Logger.error(logMessage, { context: classifiedError.context });
+        break;
+      case ErrorSeverity.CRITICAL:
+        Logger.error(`🚨 CRITICAL: ${logMessage}`, { 
+          context: classifiedError.context,
+          suggestions: classifiedError.suggestions 
+        });
+        break;
+    }
+  }
+&nbsp;
+  /**
+   * エラーハンドリングのためのヘルパー関数
+   * エラーを分類し、ログ記録し、適切な例外を投げる
+   * @param error エラーオブジェクトまたはメッセージ
+   * @param context 追加のコンテキスト情報
+   * @throws 分類済みエラー情報を含む新しいエラー
+   */
+  static handleError(error: Error | string, context?: Record&lt;string, unknown&gt;): never {
+    const classifiedError = this.classify(error, context);
+    this.logError(classifiedError);
+    
+    // 分類済み情報を含む新しいエラーを作成
+    const enhancedError = new Error(classifiedError.userMessage) as Error &amp; {
+      classification?: ClassifiedError;
+    };
+    enhancedError.classification = classifiedError;
+    
+    throw enhancedError;
+  }
+&nbsp;
+  /**
+   * エラー統計情報を取得（将来的な拡張用）
+   * @returns エラー統計
+   */
+  static getErrorStats(): Record&lt;ErrorCategory, number&gt; {
+    // 実装は将来的に追加（メモリ内統計、または永続化統計）
+    return {} as Record&lt;ErrorCategory, number&gt;;
   }
 }
 &nbsp;
 /**
- * デフォルト設定でAtSyntaxProcessorを作成
+ * 分類済みエラーの型ガード
+ * @param error エラーオブジェクト
+ * @returns 分類済みエラー情報があるかどうか
  */
-export function createDefaultAtSyntaxProcessor(securityConfig?: SecurityConfig): AtSyntaxProcessor {
-  return new AtSyntaxProcessor({}, securityConfig);
+export function hasClassification(error: unknown): error is Error &amp; { classification: ClassifiedError } {
+  return error instanceof Error &amp;&amp; 'classification' in error &amp;&amp; !!error.classification;
 }
 &nbsp;
 /**
- * 軽量モードでAtSyntaxProcessorを作成
+ * ユーザーフレンドリーなエラーメッセージを取得
+ * @param error エラーオブジェクト
+ * @returns ユーザー向けメッセージ
  */
-export function createLightweightAtSyntaxProcessor(securityConfig?: SecurityConfig): AtSyntaxProcessor {
-  return new AtSyntaxProcessor({ enableLightweightMode: true }, securityConfig);
+export function getUserMessage(error: unknown): string {
+  if (hasClassification(error)) {
+    return error.classification.userMessage;
+  }
+  
+  if (error instanceof Error) {
+    const classified = ErrorClassifier.classify(error);
+    return classified.userMessage;
+  }
+  
+  return '予期しないエラーが発生しました。';
 }
 &nbsp;
 /**
- * ファイル展開機能付きでAtSyntaxProcessorを作成
+ * エラーの復旧戦略を取得
+ * @param error エラーオブジェクト
+ * @returns 復旧戦略
  */
-export function <span class="fstat-no" title="function not covered" >createExpandingAtSyntaxProcessor(</span>securityConfig?: SecurityConfig): AtSyntaxProcessor {
-<span class="cstat-no" title="statement not covered" >  return new AtSyntaxProcessor({ enableFileExpansion: true }, securityConfig);</span>
+export function getRecoveryStrategy(error: unknown): RecoveryStrategy {
+  if (hasClassification(error)) {
+    return error.classification.recovery;
+  }
+  
+  if (error instanceof Error) {
+    const classified = ErrorClassifier.classify(error);
+    return classified.recovery;
+  }
+  
+  return RecoveryStrategy.NONE;
 }</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -1347,14 +1659,14 @@ export function <span class="fstat-no" title="function not covered" >createExpan
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
                 at 2025-10-07T21:26:29.914Z
             </div>
-        <script src="../../../prettify.js"></script>
+        <script src="../../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../../sorter.js"></script>
-        <script src="../../../block-navigation.js"></script>
+        <script src="../../sorter.js"></script>
+        <script src="../../block-navigation.js"></script>
     </body>
 </html>
     

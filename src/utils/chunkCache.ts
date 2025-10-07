@@ -164,7 +164,8 @@ async function createSecureDirectory(dirPath: string): Promise<void> {
         return;
       }
       // 一時的なENOENT/ENOTDIR（親ディレクトリの並行削除等）→ リトライ
-      if (error && (error.code === 'ENOENT' || error.code === 'ENOTDIR')) {
+      if (error && typeof error === 'object' && 'code' in error && 
+          ((error as {code: string}).code === 'ENOENT' || (error as {code: string}).code === 'ENOTDIR')) {
         attempt++;
         if (attempt < maxAttempts) {
           await new Promise((r) => setTimeout(r, 10 * attempt));
@@ -321,14 +322,15 @@ export async function saveChunks(
               continue; // 次のループで再試行
             }
             // 親が消えた/一時的な不整合 → 親を再作成してリトライ
-            if (e && (e.code === 'ENOENT' || e.code === 'ENOTDIR')) {
+            if (e && typeof e === 'object' && 'code' in e && 
+                ((e as {code: string}).code === 'ENOENT' || (e as {code: string}).code === 'ENOTDIR')) {
               linkAttempt++;
               if (linkAttempt >= maxLinkAttempts) throw e;
               await new Promise((r) => setTimeout(r, 10 * linkAttempt));
               continue;
             }
             // Windows等での権限問題 → コピーでフォールバック
-            if (e && e.code === 'EPERM') {
+            if (e && typeof e === 'object' && 'code' in e && (e as {code: string}).code === 'EPERM') {
               try { await createSecureDirectory(finalDir); } catch {}
               const files = await fs.promises.readdir(storageFinalDir);
               for (const file of files) {
@@ -375,8 +377,9 @@ export async function saveChunks(
         Logger.warn(`Failed to cleanup temp directory: ${tempDir}`, cleanupError);
       }
 
-      if (error && (error.code === 'ENOENT' || error.code === 'ENOTDIR')) {
-        debugLog('saveChunks transient fs error, retrying', { code: error.code, attempt });
+      if (error && typeof error === 'object' && 'code' in error && 
+          ((error as {code: string}).code === 'ENOENT' || (error as {code: string}).code === 'ENOTDIR')) {
+        debugLog('saveChunks transient fs error, retrying', { code: (error as {code: string}).code, attempt });
         attempt++;
         if (attempt < maxOverallAttempts) {
           await new Promise((r) => setTimeout(r, 15 * attempt));
