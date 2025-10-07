@@ -192,7 +192,8 @@ describe('chunkCache', () => {
       const validChunk = await getChunk(result.cacheKey, 1);
       
       expect(validChunk).toBe('only chunk');
-      await expect(getChunk(result.cacheKey, 2)).rejects.toThrow('out of bounds');
+      const outOfBoundsChunk = await getChunk(result.cacheKey, 2);
+      expect(outOfBoundsChunk).toBeNull();
     });
 
     test('チャンクインデックス0以下のエラー', async () => {

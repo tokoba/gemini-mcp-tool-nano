@@ -247,4 +247,100 @@ describe('chunker', () => {
       expect(result.join('')).toBe(text);
     });
   });
+
+  describe('エッジケースの高いカバレッジ', () => {
+    test('空セグメントの処理', () => {
+      // 空行のみの段落を含むテキスト
+      const text = 'Para 1\n\n   \n\nPara 2';
+      const result = chunkText(text, { maxTokens: 5 });
+      
+      expect(result.join('')).toBe(text);
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    test('長い行と短い行の混在', () => {
+      // 行レベル分割を詳細にテスト - より現実的なケース  
+      const text = 'Short line\nAnother short line\nYet another';
+      
+      const result = chunkText(text, { maxTokens: 8, preserveStructure: true });
+      
+      // まとめて1つのチャンクになる場合は元テキストと一致
+      if (result.length === 1) {
+        expect(result.join('')).toBe(text);
+      } else {
+        // 分割される場合は全内容が含まれていることを確認
+        const fullText = result.join('');
+        expect(fullText).toContain('Short line');
+        expect(fullText).toContain('Another short line');
+        expect(fullText).toContain('Yet another');
+      }
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    test('行レベル分割での境界条件', () => {
+      // 行をまたいだ組み合わせテスト
+      const text = 'Line A\nLine B\nLine C';
+      
+      const result = chunkText(text, { maxTokens: 6, preserveStructure: true });
+      
+      // まとめて1つのチャンクになる場合は元テキストと一致
+      if (result.length === 1) {
+        expect(result.join('')).toBe(text);
+      } else {
+        // 分割される場合は全内容が含まれていることを確認
+        const fullText = result.join('');
+        expect(fullText).toContain('Line A');
+        expect(fullText).toContain('Line B');  
+        expect(fullText).toContain('Line C');
+      }
+      expect(result.length).toBeGreaterThan(0);
+    });
+
+    test('最終チャンクの処理', () => {
+      // 最後のチャンクが確実に処理されるパターン
+      const text = 'A\nB\nC\nD\nE';
+      const result = chunkText(text, { maxTokens: 4, preserveStructure: true });
+      
+      expect(result.join('')).toBe(text);
+      
+      // 最後の文字が含まれていることを確認
+      const allText = result.join('');
+      expect(allText.charAt(allText.length - 1)).toBe('E');
+    });
+
+    test('空の段落区切りのみ', () => {
+      // 空の段落区切り（連続改行）の処理をテスト
+      const text = '\n\n\n';
+      const result = chunkText(text, { maxTokens: 5 });
+      
+      expect(result).toEqual([text]);
+    });
+
+    test('強制行分割での新チャンク開始', () => {
+      // line 179-180: currentChunk = [line]; currentTokens = lineTokens; をカバー
+      const longLine = 'A'.repeat(50); // 長い行（約12トークン）
+      const normalLine = 'Normal';     // 普通の行（約2トークン）
+      const text = `${normalLine}\n${longLine}`;
+      
+      const result = chunkText(text, { maxTokens: 3, preserveStructure: true });
+      
+      // 長い行が別チャンクになることを確認
+      expect(result.length).toBeGreaterThan(1);
+      
+      // 両方の内容が含まれていることを確認
+      const fullText = result.join('');
+      expect(fullText).toContain('Normal');
+      expect(fullText).toContain('A'.repeat(50));
+    });
+
+    test('空セグメント処理の明示的テスト', () => {
+      // line 132: return; をカバーするため、空セグメントが生成される状況
+      const text = 'Para1\n\n  \t  \n\nPara2';  // 空白文字のみの行を含む
+      
+      const result = chunkText(text, { maxTokens: 10, preserveStructure: true });
+      
+      expect(result.join('')).toBe(text);
+      expect(result.length).toBeGreaterThanOrEqual(1);
+    });
+  });
 });
