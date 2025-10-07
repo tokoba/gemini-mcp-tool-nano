@@ -38,13 +38,13 @@ export const fetchChunkTool: UnifiedTool = {
       const chunkContent = await getChunk(cacheId as string, chunkNumber as number);
 
       if (chunkContent === null) {
-        // Cache miss or invalid parameters
+        // This should not happen with the improved getChunk, but keeping for safety
         const errorResponse = {
-          error: "Invalid cacheId or chunkNumber out of bounds",
+          error: "Unexpected null result from cache",
           cacheId: cacheId as string,
           requestedChunk: chunkNumber as number,
         };
-        return `❌ Chunk retrieval failed:\n${JSON.stringify(errorResponse, null, 2)}\n\nPlease verify that:\n1. The cacheId is correct (from ask-gemini response)\n2. The chunkNumber is within the valid range (1 to totalChunks)\n3. The cache has not expired (24-hour TTL)`;
+        return `❌ Chunk retrieval failed:\n${JSON.stringify(errorResponse, null, 2)}\n\nThis is an unexpected error. Please report this issue.`;
       }
 
       // Successful retrieval - return in the same format as ask-gemini chunked responses

@@ -178,8 +178,7 @@ describe('chunkCache', () => {
 
     test('存在しないキャッシュキー', async () => {
       const invalidKey = '12345678-1234-4234-a234-123456789abc';
-      const result = await getChunk(invalidKey, 1);
-      expect(result).toBeNull();
+      await expect(getChunk(invalidKey, 1)).rejects.toThrow('Cache not found');
     });
 
     test('無効なキャッシュキー形式', async () => {
@@ -191,10 +190,9 @@ describe('chunkCache', () => {
       const result = await saveChunks(chunks);
 
       const validChunk = await getChunk(result.cacheKey, 1);
-      const invalidChunk = await getChunk(result.cacheKey, 2);
-
+      
       expect(validChunk).toBe('only chunk');
-      expect(invalidChunk).toBeNull();
+      await expect(getChunk(result.cacheKey, 2)).rejects.toThrow('out of bounds');
     });
 
     test('チャンクインデックス0以下のエラー', async () => {
@@ -208,8 +206,7 @@ describe('chunkCache', () => {
     test('期限切れキャッシュの自動削除', async () => {
       const expiredKey = await createExpiredCache();
       
-      const result = await getChunk(expiredKey, 1);
-      expect(result).toBeNull();
+      await expect(getChunk(expiredKey, 1)).rejects.toThrow('Cache expired');
 
       // キャッシュディレクトリが削除されていることを確認
       const cacheDir = path.join(tempCacheDir, expiredKey);
@@ -242,8 +239,7 @@ describe('chunkCache', () => {
       expect(validChunk).toBe('valid chunk');
 
       // 期限切れキャッシュは削除される
-      const expiredChunk = await getChunk(expiredKey, 1);
-      expect(expiredChunk).toBeNull();
+      await expect(getChunk(expiredKey, 1)).rejects.toThrow('Cache not found');
     });
 
     test('全て有効なキャッシュの場合', async () => {

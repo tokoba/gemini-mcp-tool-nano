@@ -171,12 +171,12 @@ export async function getChunk(cacheKey: string, chunkIndex: number): Promise<st
     if (new Date() > expiresAt) {
       // 期限切れキャッシュの削除
       await fs.promises.rm(cacheDir, { recursive: true, force: true });
-      return null;
+      throw new Error(`Cache expired: TTL expired at ${expiresAt.toISOString()}`);
     }
 
     // インデックス範囲確認
     if (chunkIndex > metadata.totalChunks) {
-      return null;
+      throw new Error(`Chunk index ${chunkIndex} out of bounds: valid range is 1-${metadata.totalChunks}`);
     }
 
     // チャンクファイルの読み取り
@@ -196,12 +196,12 @@ export async function getChunk(cacheKey: string, chunkIndex: number): Promise<st
   } catch (error) {
     if (error instanceof Error && 'code' in error && 
         (error.code === 'ENOENT' || error.code === 'ENOTDIR')) {
-      return null;
+      throw new Error(`Cache not found: directory or metadata file does not exist for cache ID '${cacheKey}'`);
     }
     // Node.js fs errors might have different structure
     if (error && typeof error === 'object' && 'code' in error &&
         (error.code === 'ENOENT' || error.code === 'ENOTDIR')) {
-      return null;
+      throw new Error(`Cache not found: directory or metadata file does not exist for cache ID '${cacheKey}'`);
     }
     throw error;
   }
