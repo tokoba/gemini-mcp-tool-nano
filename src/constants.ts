@@ -1,31 +1,36 @@
-
-
 // Logging
 export const LOG_PREFIX = "[GMCPT]";
 
 // Error messages
 export const ERROR_MESSAGES = {
   QUOTA_EXCEEDED: "Quota exceeded for quota metric 'Gemini 2.5 Pro Requests'",
-  QUOTA_EXCEEDED_SHORT: "⚠️ Gemini 2.5 Pro daily quota exceeded. Please retry with model: 'gemini-2.5-flash'",
+  QUOTA_EXCEEDED_SHORT:
+    "⚠️ Gemini 2.5 Pro daily quota exceeded. Please retry with model: 'gemini-2.5-flash'",
   TOOL_NOT_FOUND: "not found in registry",
-  NO_PROMPT_PROVIDED: "Please provide a prompt for analysis. Use @ syntax to include files (e.g., '@largefile.js explain what this does') or ask general questions",
+  NO_PROMPT_PROVIDED:
+    "Please provide a prompt for analysis. Use @ syntax to include files (e.g., '@largefile.js explain what this does') or ask general questions",
 } as const;
 
 // Status messages
 export const STATUS_MESSAGES = {
-  QUOTA_SWITCHING: "🚫 Gemini 2.5 Pro quota exceeded, switching to Flash model...",
+  QUOTA_SWITCHING:
+    "🚫 Gemini 2.5 Pro quota exceeded, switching to Flash model...",
   FLASH_RETRY: "⚡ Retrying with Gemini 2.5 Flash...",
   FLASH_SUCCESS: "✅ Flash model completed successfully",
   SANDBOX_EXECUTING: "🔒 Executing Gemini CLI command in sandbox mode...",
   GEMINI_RESPONSE: "Gemini response:",
   // Timeout prevention messages
-  PROCESSING_START: "🔍 Starting analysis (may take 5-15 minutes for large codebases)",
-  PROCESSING_CONTINUE: "⏳ Still processing... Gemini is working on your request",
+  PROCESSING_START:
+    "🔍 Starting analysis (may take 5-15 minutes for large codebases)",
+  PROCESSING_CONTINUE:
+    "⏳ Still processing... Gemini is working on your request",
   PROCESSING_COMPLETE: "✅ Analysis completed successfully",
 } as const;
 
 // Models
 export const MODELS = {
+  PRO3: "gemini-3-pro-preview",
+  FLASH3: "gemini-3-flash-preview",
   PRO: "gemini-2.5-pro",
   FLASH: "gemini-2.5-flash",
 } as const;
@@ -55,7 +60,6 @@ export const PROTOCOL = {
   // Timeout prevention
   KEEPALIVE_INTERVAL: 25000, // 25 seconds
 } as const;
-
 
 // CLI Constants
 export const CLI = {
@@ -93,7 +97,7 @@ export interface ToolArguments {
   model?: string;
   sandbox?: boolean | string;
   message?: string; // For Ping tool -- Un-used.
-  
+
   // --> new tool
   methodology?: string; // Brainstorming framework to use
   domain?: string; // Domain context for specialized brainstorming
@@ -101,6 +105,6 @@ export interface ToolArguments {
   existingContext?: string; // Background information to build upon
   ideaCount?: number; // Target number of ideas to generate
   includeAnalysis?: boolean; // Include feasibility and impact analysis
-  
+
   [key: string]: string | boolean | number | undefined; // Allow additional properties
 }
